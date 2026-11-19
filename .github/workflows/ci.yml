@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Cancel older runs of the same PR when new commits are pushed
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege: CI only needs to read the code
+permissions:
+  contents: read
+
+jobs:
+  web:
+    # The name is a required check in branch protection: renaming it would
+    # leave PRs waiting for a check that never comes
+    name: Web (lint, typecheck, test, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      # pnpm version comes from packageManager in package.json
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      # Stories run as tests in a real browser (@storybook/addon-vitest)
+      - name: Install Chromium for Playwright
+        run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test
+      - run: pnpm build
+      # A broken story (bad import, wrong props) fails here, not in a demo
+      - run: pnpm build-storybook --quiet
