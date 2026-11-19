@@ -6,5 +6,12 @@
   "welcome": {
     "title": "barrosw5.dev",
     "description": "This site is under construction."
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "languages": {
+      "en": "English",
+      "pt": "Português"
+    }
   }
 }
