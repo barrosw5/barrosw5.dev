@@ -1,63 +1,69 @@
 @AGENTS.md
 
-# barrosw5.dev — regras do projeto
+# barrosw5.dev — project rules
 
-Site pessoal (portfólio/CV, /now, wishlist) com área de admin. O plano e as fases estão em [ROADMAP.md](ROADMAP.md).
+Personal site (portfolio/CV, /now, wishlist) with an admin area. The plan and phases are in [ROADMAP.md](ROADMAP.md).
 
-Stack: Next.js (App Router) + React + TypeScript + Tailwind + shadcn/ui, Supabase, Storybook, Vitest. Gestor de pacotes: **pnpm**.
+Stack: Next.js (App Router) + React + TypeScript + Tailwind + shadcn/ui, Supabase, Storybook, Vitest. Package manager: **pnpm**.
 
-## 1. Idiomas: inglês e português de Portugal (sempre)
+## 0. Before writing any code
 
-- O site existe sempre em **`en`** e **`pt-PT`**. Nenhuma funcionalidade fica só num idioma.
-- **Nenhum texto visível ao utilizador fica escrito à mão nos componentes.** Todo o texto passa por uma função `t('chave')`, que lê a tradução do JSON do locale ativo.
-- As traduções vivem em `src/i18n/messages/en.json` e `src/i18n/messages/pt-PT.json`. **Os dois ficheiros têm sempre as mesmas chaves**: quem acrescenta uma chave num acrescenta-a no outro, no mesmo commit.
-- As chaves organizam-se por funcionalidade (ex.: `wishlist.reserve.button`, `admin.projects.title`).
-- Português **de Portugal**, não do Brasil (ex.: "ecrã", "utilizador", "guardar", "transferir").
-- Também se traduzem: `aria-label`, `alt`, `title`, placeholders, mensagens de erro e metadados da página.
-- Datas, números e preços formatam-se segundo o locale (`Intl`), através de funções em `core/utils/`.
+- **Always read this file and [ROADMAP.md](ROADMAP.md) first** and check that the work fits both: the rules here and the current roadmap phase.
+- **When a roadmap step is done, tick it (`- [x]`) in both [ROADMAP.md](ROADMAP.md) and [ROADMAP.pt-PT.md](ROADMAP.pt-PT.md)**, in the same PR that finishes it.
 
-## 2. Arquitetura do frontend
+## 1. Languages: English and European Portuguese (always)
 
-Fluxo, sempre nesta direção (cada camada só chama a seguinte):
+- The site always exists in **`en`** and **`pt-PT`**. No feature ships in only one language.
+- **No user-facing text is hardcoded in components.** All text goes through a `t('key')` function that reads the translation from the active locale's JSON.
+- Translations live in `src/i18n/messages/en.json` and `src/i18n/messages/pt-PT.json`. **Both files always have the same keys**: a key added to one is added to the other in the same commit.
+- Keys are grouped by feature (e.g. `wishlist.reserve.button`, `admin.projects.title`).
+- Portuguese **from Portugal**, not Brazil (e.g. "ecrã", "utilizador", "guardar", "transferir").
+- These are translated too: `aria-label`, `alt`, `title`, placeholders, error messages and page metadata.
+- Dates, numbers and prices are formatted for the locale (`Intl`), through functions in `core/utils/`.
+- **Docs too:** `README` and `ROADMAP` always exist in both languages: `README.md` / `ROADMAP.md` in English (what GitHub shows by default) and `README.pt-PT.md` / `ROADMAP.pt-PT.md` in Portuguese, each linking to the other at the top. Changing one means changing the other in the same PR.
+
+## 2. Frontend architecture
+
+Flow, always in this direction (each layer only calls the next one):
 
 ```
-Page (View) → Components (UI + Hook) → Hooks (Estado/Lógica) → Services (Regras de negócio) → API (Chamadas HTTP)
+Page (View) → Components (UI + Hook) → Hooks (State/Logic) → Services (Business rules) → API (HTTP calls)
 ```
 
-Estrutura em `src/`:
+Structure in `src/`:
 
-| Pasta | Papel | Pode importar |
+| Folder | Role | May import |
 |---|---|---|
-| `app/**/page.tsx` | **Pages (views).** Cascas vazias que só importam e montam componentes. Sem estado, sem lógica, sem chamadas. | `components/` |
-| `components/` | Componentes de UI (ex.: `LoginForm`, `Dashboard`). Cada componente chama **o seu próprio hook** para o estado e a lógica, para a page ficar limpa. `components/ui/` é para os primitivos do shadcn. | `hooks/`, `core/utils/`, `core/types/`, outros componentes |
-| `hooks/` | Custom hooks (ex.: `useAuth.ts`, `useDashboard.ts`). Gerem o estado (`useState`, `useEffect`), chamam os services e devolvem os dados ao componente. | `core/services/`, `core/types/` |
-| `core/services/` | Lógica de negócio. Processam os dados antes de os enviar para a API e depois de os receber. | `core/api/`, `core/types/`, `core/utils/` |
-| `core/api/` | Chamadas HTTP puras (`fetch`), ex.: `authApi.ts`. **Sem estado React.** | `core/types/` |
-| `core/types/` | Interfaces e tipos TypeScript partilhados. | — |
-| `core/utils/` | Funções puras de apresentação (ex.: `formatTime`, `formatPrice`), sem estado nem API. **É a única pasta de `core/` que os componentes podem importar diretamente.** | `core/types/` |
+| `app/**/page.tsx` | **Pages (views).** Empty shells that only import and assemble components. No state, no logic, no calls. | `components/` |
+| `components/` | UI components (e.g. `LoginForm`, `Dashboard`). Each component calls **its own hook** for state and logic, keeping the page clean. `components/ui/` holds the shadcn primitives. | `hooks/`, `core/utils/`, `core/types/`, other components |
+| `hooks/` | Custom hooks (e.g. `useAuth.ts`, `useDashboard.ts`). Manage state (`useState`, `useEffect`), call services and return data to the component. | `core/services/`, `core/types/` |
+| `core/services/` | Business logic. Process data before sending it to the API and after receiving it. | `core/api/`, `core/types/`, `core/utils/` |
+| `core/api/` | Plain HTTP calls (`fetch`), e.g. `authApi.ts`. **No React state.** | `core/types/` |
+| `core/types/` | Shared TypeScript interfaces and types. | — |
+| `core/utils/` | Pure presentation functions (e.g. `formatTime`, `formatPrice`), no state, no API. **The only `core/` folder components may import directly.** | `core/types/` |
 
-Regras:
+Rules:
 
-- **Não usar `src/pages/`**: no Next.js essa pasta ativa o Pages Router e choca com o `app/`. A camada "Pages" são os `page.tsx` (e `layout.tsx`) dentro de `src/app/`.
-- Nunca saltar camadas: um componente não chama `core/services/` nem `core/api/`; um hook não chama `core/api/`.
-- Nomes: componentes em `PascalCase.tsx`, hooks `useAlgo.ts`, APIs `algoApi.ts`, services `algoService.ts`.
-- Antes de escrever código Next.js, ler o guia em `node_modules/next/dist/docs/` (ver AGENTS.md).
+- **Never create `src/pages/`**: in Next.js that folder turns on the Pages Router and clashes with `app/`. The "Pages" layer is the `page.tsx` (and `layout.tsx`) files inside `src/app/`.
+- Never skip layers: a component does not call `core/services/` or `core/api/`; a hook does not call `core/api/`.
+- Naming: components `PascalCase.tsx`, hooks `useThing.ts`, APIs `thingApi.ts`, services `thingService.ts`.
+- Before writing Next.js code, read the guide in `node_modules/next/dist/docs/` (see AGENTS.md).
 
-## 3. Documentação das APIs
+## 3. API documentation
 
-- Todas as funções exportadas de `core/api/` e `core/services/` têm **TSDoc**: o que fazem, parâmetros, o que devolvem e os erros que podem lançar.
-- Cada endpoint HTTP do projeto (Route Handlers em `app/api/**/route.ts`, Server Actions expostas e chamadas a serviços externos como Supabase ou a API do GitHub) está documentado em `docs/API.md`: método, caminho, autenticação, corpo do pedido, respostas e códigos de erro, com um exemplo.
-- Mudar um endpoint implica atualizar a documentação no mesmo PR.
+- Every exported function in `core/api/` and `core/services/` has **TSDoc**: what it does, its parameters, what it returns and the errors it can throw.
+- Every HTTP endpoint in the project (Route Handlers in `app/api/**/route.ts`, exposed Server Actions, and calls to external services such as Supabase or the GitHub API) is documented in `docs/API.md`: method, path, auth, request body, responses and error codes, with an example.
+- Changing an endpoint means updating its docs in the same PR.
 
-## 4. Storybook para todos os componentes
+## 4. Storybook for every component
 
-- **Cada componente em `components/` tem um ficheiro `.stories.tsx` ao lado**, com os estados relevantes (por omissão, a carregar, vazio, erro, desativado...).
-- As stories mostram o componente nos dois idiomas (`en` e `pt-PT`) e em modo claro e escuro.
-- Os stories correm como testes (`@storybook/addon-vitest`) e o CI faz `build-storybook`: uma story partida bloqueia o PR.
+- **Every component in `components/` has a `.stories.tsx` file next to it**, covering the relevant states (default, loading, empty, error, disabled...).
+- Stories show the component in both languages (`en` and `pt-PT`) and in light and dark mode.
+- Stories run as tests (`@storybook/addon-vitest`) and CI runs `build-storybook`: a broken story blocks the PR.
 
-## 5. Git, CI e a branch `main`
+## 5. Git, CI and the `main` branch
 
-- **A `main` está protegida: nunca se faz commit nem push direto para a `main`.** Todo o trabalho entra por branch + Pull Request.
-- O PR só pode ser integrado com os checks do GitHub Actions a verde (`.github/workflows/`): lint, typecheck, testes, build e build do Storybook, CodeQL e título do PR.
-- Merge por **squash**: o título do PR torna-se a mensagem de commit na `main`, por isso segue **Conventional Commits** (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`, `perf`).
-- Antes de abrir um PR, correr localmente: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`.
+- **`main` is protected: never commit or push directly to `main`.** All work goes through a branch + Pull Request.
+- A PR can only be merged with the GitHub Actions checks green (`.github/workflows/`): lint, typecheck, tests, build and Storybook build, CodeQL, and PR title.
+- **Squash** merge: the PR title becomes the commit message on `main`, so it follows **Conventional Commits** (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`, `perf`).
+- Before opening a PR, run locally: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm build-storybook`.
