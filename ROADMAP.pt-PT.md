@@ -65,7 +65,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] Setup Next.js + TypeScript + Tailwind + shadcn/ui
 - [x] Storybook + Vitest (os stories correm como testes)
 - [x] CI (GitHub Actions: lint, typecheck, testes, build, CodeQL, título do PR) + `main` protegida
-- [ ] i18n: função `t()` + `en.json` / `pt-PT.json` + idioma no URL (`/en`, `/pt-PT`)
+- [x] i18n: função `t()` + `en.json` / `pt-PT.json` + idioma no URL (`/en`, `/pt-PT`)
 - [ ] Botão para mudar de idioma
 - [ ] Modo escuro (botão + preferência do sistema)
 - [ ] Layout base: cabeçalho, navegação, rodapé (+ stories)

@@ -65,7 +65,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Set up Next.js + TypeScript + Tailwind + shadcn/ui
 - [x] Storybook + Vitest (stories run as tests)
 - [x] CI (GitHub Actions: lint, typecheck, tests, build, CodeQL, PR title) + protected `main`
-- [ ] i18n: `t()` function + `en.json` / `pt-PT.json` + locale in the URL (`/en`, `/pt-PT`)
+- [x] i18n: `t()` function + `en.json` / `pt-PT.json` + locale in the URL (`/en`, `/pt-PT`)
 - [ ] Language switcher
 - [ ] Dark mode (toggle + system preference)
 - [ ] Base layout: header, navigation, footer (+ stories)

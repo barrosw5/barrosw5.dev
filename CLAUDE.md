@@ -15,7 +15,9 @@ Stack: Next.js (App Router) + React + TypeScript + Tailwind + shadcn/ui, Supabas
 
 - The site always exists in **`en`** and **`pt-PT`**. No feature ships in only one language.
 - **No user-facing text is hardcoded in components.** All text goes through a `t('key')` function that reads the translation from the active locale's JSON.
-- Translations live in `src/i18n/messages/en.json` and `src/i18n/messages/pt-PT.json`. **Both files always have the same keys**: a key added to one is added to the other in the same commit.
+- Translations live in `src/i18n/messages/en.json` and `src/i18n/messages/pt-PT.json`. **Both files always have the same keys**: a key added to one is added to the other in the same commit (`src/i18n/messages.test.ts` fails the CI otherwise).
+- Library: **next-intl**. Use `useTranslations("namespace")` in components, `getTranslations` in async server code (e.g. `generateMetadata`). Keys are type-checked against `en.json`.
+- URLs always carry the language (`/en/...`, `/pt-PT/...`); every route lives under `src/app/[locale]/`. For links and navigation use `Link`, `redirect`, `useRouter` and `usePathname` from `@/i18n/navigation`, **never** from `next/link` or `next/navigation`, so the language prefix is kept.
 - Keys are grouped by feature (e.g. `wishlist.reserve.button`, `admin.projects.title`).
 - Portuguese **from Portugal**, not Brazil (e.g. "ecrã", "utilizador", "guardar", "transferir").
 - These are translated too: `aria-label`, `alt`, `title`, placeholders, error messages and page metadata.
