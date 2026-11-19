@@ -9,18 +9,21 @@ Stack: Next.js (App Router) + React + TypeScript + Tailwind + shadcn/ui, Supabas
 ## 0. Before writing any code
 
 - **Always read this file and [ROADMAP.md](ROADMAP.md) first** and check that the work fits both: the rules here and the current roadmap phase.
-- **When a roadmap step is done, tick it (`- [x]`) in both [ROADMAP.md](ROADMAP.md) and [ROADMAP.pt-PT.md](ROADMAP.pt-PT.md)**, in the same PR that finishes it.
+- **When a roadmap step is done, tick it (`- [x]`) in both [ROADMAP.md](ROADMAP.md) and [ROADMAP.pt.md](ROADMAP.pt.md)**, in the same PR that finishes it.
 
 ## 1. Languages: English and European Portuguese (always)
 
-- The site always exists in **`en`** and **`pt-PT`**. No feature ships in only one language.
+- The site always exists in **`en`** and **`pt`**. No feature ships in only one language.
+- In code, URLs and file names the Portuguese locale is just **`pt`**; the content is still European Portuguese. Where the full tag matters (`<html lang>`, `Intl` formatting) use `languageTags[locale]` from `@/i18n/routing`, which maps `pt` → `pt-PT`.
 - **No user-facing text is hardcoded in components.** All text goes through a `t('key')` function that reads the translation from the active locale's JSON.
-- Translations live in `src/i18n/messages/en.json` and `src/i18n/messages/pt-PT.json`. **Both files always have the same keys**: a key added to one is added to the other in the same commit.
+- Translations live in `src/i18n/messages/en.json` and `src/i18n/messages/pt.json`. **Both files always have the same keys**: a key added to one is added to the other in the same commit (`src/i18n/messages.test.ts` fails the CI otherwise).
+- Library: **next-intl**. Use `useTranslations("namespace")` in components, `getTranslations` in async server code (e.g. `generateMetadata`). Keys are type-checked against `en.json`.
+- URLs always carry the language (`/en/...`, `/pt/...`); every route lives under `src/app/[locale]/`. For links and navigation use `Link`, `redirect`, `useRouter` and `usePathname` from `@/i18n/navigation`, **never** from `next/link` or `next/navigation`, so the language prefix is kept.
 - Keys are grouped by feature (e.g. `wishlist.reserve.button`, `admin.projects.title`).
 - Portuguese **from Portugal**, not Brazil (e.g. "ecrã", "utilizador", "guardar", "transferir").
 - These are translated too: `aria-label`, `alt`, `title`, placeholders, error messages and page metadata.
-- Dates, numbers and prices are formatted for the locale (`Intl`), through functions in `core/utils/`.
-- **Docs too:** `README` and `ROADMAP` always exist in both languages: `README.md` / `ROADMAP.md` in English (what GitHub shows by default) and `README.pt-PT.md` / `ROADMAP.pt-PT.md` in Portuguese, each linking to the other at the top. Changing one means changing the other in the same PR.
+- Dates, numbers and prices are formatted for the locale (`Intl`, with `languageTags[locale]`), through functions in `core/utils/`.
+- **Docs too:** `README` and `ROADMAP` always exist in both languages: `README.md` / `ROADMAP.md` in English (what GitHub shows by default) and `README.pt.md` / `ROADMAP.pt.md` in Portuguese, each linking to the other at the top. Changing one means changing the other in the same PR.
 
 ## 2. Frontend architecture
 
@@ -58,7 +61,7 @@ Rules:
 ## 4. Storybook for every component
 
 - **Every component in `components/` has a `.stories.tsx` file next to it**, covering the relevant states (default, loading, empty, error, disabled...).
-- Stories show the component in both languages (`en` and `pt-PT`) and in light and dark mode.
+- Stories show the component in both languages (`en` and `pt`) and in light and dark mode.
 - Stories run as tests (`@storybook/addon-vitest`) and CI runs `build-storybook`: a broken story blocks the PR.
 
 ## 5. Git, CI and the `main` branch

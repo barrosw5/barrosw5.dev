@@ -2,3 +2,7 @@ allowBuilds:
   esbuild: true
   sharp: false
   unrs-resolver: false
+  # From next-intl (only for its optional message extractor). Both ship
+  # prebuilt binaries; the scripts are just build-from-source fallbacks.
+  "@parcel/watcher": false
+  "@swc/core": false
