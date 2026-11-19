@@ -1,5 +1,8 @@
 import type { Preview } from "@storybook/nextjs-vite";
-import "../app/globals.css";
+import "../src/app/globals.css";
+import { geistSans, geistMono } from "../src/lib/fonts";
+
+document.documentElement.classList.add(geistSans.variable, geistMono.variable);
 
 const preview: Preview = {
   parameters: {
