@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import en from "./messages/en.json";
-import ptPT from "./messages/pt-PT.json";
+import pt from "./messages/pt.json";
 
 type Messages = { [key: string]: string | Messages };
 
@@ -25,13 +25,13 @@ function entriesOf(messages: Messages): Array<[string, string]> {
 }
 
 describe("translations", () => {
-  it("en and pt-PT have exactly the same keys", () => {
-    expect(keysOf(ptPT).sort()).toEqual(keysOf(en).sort());
+  it("en and pt have exactly the same keys", () => {
+    expect(keysOf(pt).sort()).toEqual(keysOf(en).sort());
   });
 
   it.each([
     ["en", en],
-    ["pt-PT", ptPT],
+    ["pt", pt],
   ])("%s has no empty translations", (_locale, messages) => {
     const empty = entriesOf(messages)
       .filter(([, value]) => value.trim() === "")

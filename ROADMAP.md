@@ -1,6 +1,6 @@
 # Roadmap — Personal Site
 
-**English** | [Português](ROADMAP.pt-PT.md)
+**English** | [Português](ROADMAP.pt.md)
 
 A personal site that works as a portfolio/CV and is useful day to day. All content is managed from an admin area, without touching code.
 
@@ -56,7 +56,7 @@ Rust worker (GitHub Actions cron, e.g. every 6 h)
 Phase 0 lays the foundations. From then on, each phase is **one feature, done end to end**, following the architecture in [CLAUDE.md](CLAUDE.md):
 
 ```
-DB → API (core/api, documented in docs/API.md) → Service → Hook → Components (+ stories, en/pt-PT) → Page → Tests
+DB → API (core/api, documented in docs/API.md) → Service → Hook → Components (+ stories, en/pt) → Page → Tests
 ```
 
 A feature is only done when it works in both languages, in light and dark mode, and with the CI green.
@@ -65,7 +65,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Set up Next.js + TypeScript + Tailwind + shadcn/ui
 - [x] Storybook + Vitest (stories run as tests)
 - [x] CI (GitHub Actions: lint, typecheck, tests, build, CodeQL, PR title) + protected `main`
-- [x] i18n: `t()` function + `en.json` / `pt-PT.json` + locale in the URL (`/en`, `/pt-PT`)
+- [x] i18n: `t()` function + `en.json` / `pt.json` + locale in the URL (`/en`, `/pt`)
 - [ ] Language switcher
 - [ ] Dark mode (toggle + system preference)
 - [ ] Base layout: header, navigation, footer (+ stories)

@@ -56,7 +56,7 @@ Worker em Rust (GitHub Actions cron, ex.: de 6 em 6 h)
 A fase 0 monta as bases. A partir daí, cada fase é **uma funcionalidade feita de ponta a ponta**, seguindo a arquitetura do [CLAUDE.md](CLAUDE.md):
 
 ```
-BD → API (core/api, documentada em docs/API.md) → Service → Hook → Componentes (+ stories, en/pt-PT) → Página → Testes
+BD → API (core/api, documentada em docs/API.md) → Service → Hook → Componentes (+ stories, en/pt) → Página → Testes
 ```
 
 Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo claro e escuro, e com o CI verde.
@@ -65,7 +65,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] Setup Next.js + TypeScript + Tailwind + shadcn/ui
 - [x] Storybook + Vitest (os stories correm como testes)
 - [x] CI (GitHub Actions: lint, typecheck, testes, build, CodeQL, título do PR) + `main` protegida
-- [x] i18n: função `t()` + `en.json` / `pt-PT.json` + idioma no URL (`/en`, `/pt-PT`)
+- [x] i18n: função `t()` + `en.json` / `pt.json` + idioma no URL (`/en`, `/pt`)
 - [ ] Botão para mudar de idioma
 - [ ] Modo escuro (botão + preferência do sistema)
 - [ ] Layout base: cabeçalho, navegação, rodapé (+ stories)

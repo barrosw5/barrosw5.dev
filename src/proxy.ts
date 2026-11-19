@@ -4,7 +4,7 @@ import { routing } from "./i18n/routing";
 
 /**
  * Redirects requests without a language prefix (e.g. `/wishlist`) to the
- * visitor's language (`/pt-PT/wishlist`), based on the browser language and a
+ * visitor's language (`/pt/wishlist`), based on the browser language and a
  * cookie remembering the last choice.
  */
 export default createMiddleware(routing);

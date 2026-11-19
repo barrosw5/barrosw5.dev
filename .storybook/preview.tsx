@@ -2,17 +2,17 @@ import type { Preview } from "@storybook/nextjs-vite";
 import { NextIntlClientProvider } from "next-intl";
 import "../src/app/globals.css";
 import en from "../src/i18n/messages/en.json";
-import ptPT from "../src/i18n/messages/pt-PT.json";
-import { routing, type Locale } from "../src/i18n/routing";
+import pt from "../src/i18n/messages/pt.json";
+import { languageTags, routing, type Locale } from "../src/i18n/routing";
 import { geistSans, geistMono } from "../src/lib/fonts";
 
 document.documentElement.classList.add(geistSans.variable, geistMono.variable);
 
-const messages: Record<Locale, typeof en> = { en, "pt-PT": ptPT };
+const messages: Record<Locale, typeof en> = { en, pt };
 
 const preview: Preview = {
   // Language switcher in the Storybook toolbar. A story can pin a language
-  // with `globals: { locale: "pt-PT" }`.
+  // with `globals: { locale: "pt" }`.
   globalTypes: {
     locale: {
       description: "Language",
@@ -20,7 +20,7 @@ const preview: Preview = {
         icon: "globe",
         items: [
           { value: "en", title: "English" },
-          { value: "pt-PT", title: "Português" },
+          { value: "pt", title: "Português" },
         ],
         dynamicTitle: true,
       },
@@ -33,7 +33,7 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       const locale = context.globals.locale as Locale;
-      document.documentElement.lang = locale;
+      document.documentElement.lang = languageTags[locale];
       return (
         <NextIntlClientProvider
           locale={locale}

@@ -3,7 +3,7 @@ import { expect } from "storybook/test";
 
 import { Welcome } from "./Welcome";
 import en from "@/i18n/messages/en.json";
-import ptPT from "@/i18n/messages/pt-PT.json";
+import pt from "@/i18n/messages/pt.json";
 
 const meta = {
   title: "Pages/Welcome",
@@ -21,8 +21,8 @@ export const English: Story = {
 };
 
 export const Portuguese: Story = {
-  globals: { locale: "pt-PT" },
+  globals: { locale: "pt" },
   play: async ({ canvas }) => {
-    await expect(canvas.getByText(ptPT.welcome.description)).toBeVisible();
+    await expect(canvas.getByText(pt.welcome.description)).toBeVisible();
   },
 };

@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locale as rootLocale } from "next/root-params";
 
-import { routing } from "@/i18n/routing";
+import { languageTags, routing } from "@/i18n/routing";
 import { geistMono, geistSans } from "@/lib/fonts";
 
 import "../globals.css";
@@ -30,7 +30,7 @@ export default async function LocaleLayout({
 
   return (
     <html
-      lang={locale}
+      lang={languageTags[locale]}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

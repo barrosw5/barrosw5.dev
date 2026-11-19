@@ -7,7 +7,7 @@ import { routing } from "./routing";
  *
  * Always use these instead of `next/link` and `next/navigation`, so links keep
  * the current language prefix: `<Link href="/wishlist">` goes to
- * `/pt-PT/wishlist` when the visitor is on the Portuguese site.
+ * `/pt/wishlist` when the visitor is on the Portuguese site.
  */
 export const { Link, redirect, usePathname, useRouter, getPathname } =
   createNavigation(routing);
