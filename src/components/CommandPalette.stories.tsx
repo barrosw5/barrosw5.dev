@@ -45,6 +45,11 @@ export const Open: Story = {
       name: t.commandPalette.title,
     });
     const inDialog = within(dialog);
+    // The dialog fades in from opacity 0 (100 ms): wait until it's shown,
+    // or a fast machine (like the CI) checks too early
+    await waitFor(() =>
+      expect(inDialog.getByRole("option", { name: new RegExp(t.nav.home) })).toBeVisible(),
+    );
     for (const id of ["home", "projects", "about", "wishlist"] as const) {
       await expect(
         inDialog.getByRole("option", { name: new RegExp(t.nav[id]) }),

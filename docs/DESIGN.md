@@ -50,8 +50,9 @@ monochrome site that rewards people who explore it.
   short animation: ThemeToggle turns the moon into the sun (rotate + fade),
   LanguageSwitcher slides in the other language's code (EN ↔ PT). Both start
   from the visitor's system: OS light/dark, browser language.
-- **Segmented controls have a sliding pill** behind the selected option
-  (projects view toggle).
+- **Segmented controls have a sliding pill** behind the selected option: the
+  navigation pill (it slides to the page you go to) and the projects view
+  toggle.
 - Images and headlines **reveal on scroll**.
 - **`prefers-reduced-motion` is always respected**: with it on, things appear
   without moving.
