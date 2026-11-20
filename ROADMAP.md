@@ -71,7 +71,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Visual identity — apply to the existing components (LanguageSwitcher, ThemeToggle, Welcome) and check them on mobile and desktop in Storybook
 - [x] Base layout: header, navigation (mobile menu + desktop nav), footer (+ stories), "under construction" pages and a 404 page
 - [x] ⌘K / Ctrl+K command palette (desktop; shows ⌘ on Mac and Ctrl elsewhere)
-- [ ] Playwright e2e setup (+ CI job)
+- [x] Playwright e2e setup (+ CI job)
 - [ ] Supabase project + environment variables (`.env.example`)
 - [ ] Deploy to Vercel (with a preview deploy on each PR)
 

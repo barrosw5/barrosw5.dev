@@ -10,7 +10,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "latest",
+    "@playwright/test": "1.65.1",
     "@storybook/addon-a11y": "^10.6.7",
     "@storybook/addon-docs": "^10.6.7",
     "@storybook/addon-vitest": "^10.6.7",
@@ -41,7 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "eslint-plugin-storybook": "^10.6.7",
-    "playwright": "latest",
+    "playwright": "1.65.1",
     "storybook": "^10.6.7",
     "tailwindcss": "4.3.5",
     "typescript": "^5",
