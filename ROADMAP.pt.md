@@ -70,7 +70,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] Identidade visual — design tokens no `globals.css`: paleta de cores (claro e escuro), tipos de letra, escala tipográfica, espaçamentos, cantos e breakpoints, tudo mobile-first
 - [x] Identidade visual — aplicar aos componentes que já existem (LanguageSwitcher, ThemeToggle, Welcome) e confirmá-los no telemóvel e no computador no Storybook
 - [x] Layout base: cabeçalho, navegação (menu no telemóvel + navegação no computador), rodapé (+ stories), páginas "em construção" e página 404
-- [ ] Paleta de comandos ⌘K / Ctrl+K (computador; mostra ⌘ no Mac e Ctrl nos outros)
+- [x] Paleta de comandos ⌘K / Ctrl+K (computador; mostra ⌘ no Mac e Ctrl nos outros)
 - [ ] Setup de testes e2e com Playwright (+ job no CI)
 - [ ] Projeto Supabase + variáveis de ambiente (`.env.example`)
 - [ ] Deploy na Vercel (com deploy de preview em cada PR)

@@ -56,5 +56,21 @@
       "title": "Still being built.",
       "description": "This page is coming soon."
     }
+  },
+  "commandPalette": {
+    "open": "Open the command palette",
+    "title": "Command palette",
+    "description": "Go to a page or run an action.",
+    "placeholder": "Search pages and actions…",
+    "empty": "No results.",
+    "current": "Current",
+    "groups": {
+      "pages": "Pages",
+      "preferences": "Preferences",
+      "links": "Links"
+    },
+    "dark": "Switch to dark mode",
+    "light": "Switch to light mode",
+    "language": "Switch to {language}"
   }
 }

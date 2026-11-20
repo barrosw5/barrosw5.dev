@@ -9,7 +9,8 @@ import { type NavItemId, useSiteNav } from "@/hooks/useSiteNav";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-const icons: Record<NavItemId, typeof House> = {
+/** Page icons, also used by the command palette. */
+export const navIcons: Record<NavItemId, typeof House> = {
   home: House,
   projects: FolderGit2,
   about: UserRound,
@@ -37,7 +38,7 @@ export function SiteNav() {
       <div className="pointer-events-auto flex items-center gap-1 rounded-full border bg-background/80 p-1 shadow-sm backdrop-blur-md">
         <ul className="flex items-center gap-0.5 md:gap-1">
           {items.map(({ id, href, isCurrent }) => {
-            const Icon = icons[id];
+            const Icon = navIcons[id];
             return (
               <li key={id}>
                 <Link

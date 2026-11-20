@@ -1,13 +1,14 @@
 import { useTranslations } from "next-intl";
 
+import { CommandPalette } from "@/components/CommandPalette";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SiteNav } from "@/components/SiteNav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 /**
  * Everything at the edges of every page: a "skip to content" link for
- * keyboard users, the navigation pill, and (on desktop) the theme and
- * language buttons in the top right corner.
+ * keyboard users, the navigation pill, and (on desktop) the command palette,
+ * theme and language buttons in the top right corner.
  */
 export function SiteHeader() {
   const t = useTranslations("nav");
@@ -28,6 +29,9 @@ export function SiteHeader() {
         aria-label={t("preferences")}
         className="fixed top-5 right-gutter z-50 hidden items-center gap-1 md:flex"
       >
+        {/* Its button only shows on desktop, but the ⌘K / Ctrl+K shortcut
+            works on any screen with a keyboard (hidden ≠ unmounted) */}
+        <CommandPalette />
         <ThemeToggle />
         <LanguageSwitcher />
       </div>

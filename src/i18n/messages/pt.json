@@ -56,5 +56,21 @@
       "title": "Ainda em construção.",
       "description": "Esta página chega em breve."
     }
+  },
+  "commandPalette": {
+    "open": "Abrir a paleta de comandos",
+    "title": "Paleta de comandos",
+    "description": "Vai para uma página ou faz uma ação.",
+    "placeholder": "Pesquisar páginas e ações…",
+    "empty": "Sem resultados.",
+    "current": "Atual",
+    "groups": {
+      "pages": "Páginas",
+      "preferences": "Preferências",
+      "links": "Ligações"
+    },
+    "dark": "Mudar para o modo escuro",
+    "light": "Mudar para o modo claro",
+    "language": "Mudar para {language}"
   }
 }
