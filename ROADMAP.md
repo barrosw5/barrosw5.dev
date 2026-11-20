@@ -73,7 +73,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] ⌘K / Ctrl+K command palette (desktop; shows ⌘ on Mac and Ctrl elsewhere)
 - [x] Playwright e2e setup (+ CI job)
 - [x] Supabase project + environment variables (`.env.example`)
-- [ ] Deploy to Vercel (with a preview deploy on each PR)
+- [x] Deploy to Vercel (with a preview deploy on each PR)
 
 ### Phase 1 — Auth and admin
 - [ ] GitHub login (Supabase Auth), restricted to my ID

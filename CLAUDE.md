@@ -80,12 +80,13 @@ Rules:
 - One spec file per area (`i18n`, `theme`, `navigation`, `layout`, `command-palette`...). Import `test`/`expect` from `e2e/fixtures.ts`, not from `@playwright/test`: it fails the test on any console error and gives `open(path)`, which waits for hydration.
 - Never hardcode texts: read them from the translations with `text(locale)`. Find elements by role and accessible name (`getByRole`), like a visitor would; CSS locators also match the hidden copies of pages Next keeps for "back" (use `visibleFooter`, `.filter({ visible: true })`).
 - Desktop-only or phone-only tests skip the other with `test.skip(({ isMobile }) => ...)`, saying why.
-- Run with `pnpm test:e2e` (builds and serves on port 3123, never 3000) or `pnpm test:e2e:ui` to watch them.
+- Run with `pnpm test:e2e` (builds and serves on port 3123, never 3000) or `pnpm test:e2e:ui` to watch them. To test a deployed site instead, give its address: `E2E_BASE_URL=https://barrosw5-dev.vercel.app pnpm test:e2e`.
 - On CI they run inside Playwright's Docker image (`mcr.microsoft.com/playwright:vX.Y.Z-noble` in `.github/workflows/ci.yml`). **Its tag must match the `@playwright/test` version in `package.json`**: when one is bumped, bump the other in the same PR.
 
 ## 6. Git, CI and the `main` branch
 
 - **`main` is protected: never commit or push directly to `main`.** All work goes through a branch + Pull Request.
 - A PR can only be merged with the GitHub Actions checks green (`.github/workflows/`): lint, typecheck, tests, build and Storybook build, e2e tests, CodeQL, and PR title.
+- **Deploys (Vercel):** every merge to `main` goes to production (https://barrosw5-dev.vercel.app); every PR gets a preview deploy with its own address. Environment variables live in Vercel → Settings → Environment Variables and are listed (without values) in `.env.example`: a new variable goes in both, in the same PR. `NEXT_PUBLIC_` ones are baked in at build time, so changing one needs a redeploy. Node's version is pinned by `engines.node` in `package.json` (same major as `.node-version`); pnpm's by `packageManager`, which Vercel honours through `ENABLE_EXPERIMENTAL_COREPACK=1`.
 - **Squash** merge: the PR title becomes the commit message on `main`, so it follows **Conventional Commits** (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`, `perf`).
 - Before opening a PR, run locally: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm build-storybook`, `pnpm test:e2e`.
