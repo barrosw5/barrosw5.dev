@@ -12,12 +12,13 @@
     "languages": {
       "en": "English",
       "pt": "Português"
+    },
+    "short": {
+      "en": "EN",
+      "pt": "PT"
     }
   },
   "theme": {
-    "label": "Theme",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
+    "label": "Dark mode"
   }
 }

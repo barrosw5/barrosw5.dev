@@ -15,57 +15,61 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // One story per state. Each `play` only checks the state, in the toolbar
-// language; click the buttons yourself to try the others.
+// language; click the button yourself to see the animation.
 
-export const System: Story = {
-  globals: { theme: "system" },
-  play: async ({ canvas, globals }) => {
-    const t = messages[globals.locale as Locale].theme;
-    await expect(canvas.getByRole("group", { name: t.label })).toBeVisible();
-    await expect(
-      canvas.getByRole("button", { name: t.system }),
-    ).toHaveAttribute("aria-pressed", "true");
-  },
-};
-
+/** Light mode: shows the moon, to switch to dark. */
 export const Light: Story = {
   globals: { theme: "light" },
   play: async ({ canvas, globals }) => {
     const t = messages[globals.locale as Locale].theme;
     await expect(
-      canvas.getByRole("button", { name: t.light }),
-    ).toHaveAttribute("aria-pressed", "true");
+      canvas.getByRole("button", { name: t.label }),
+    ).toHaveAttribute("aria-pressed", "false");
     await expect(document.documentElement).not.toHaveClass("dark");
   },
 };
 
+/** Dark mode: shows the sun, to switch back to light. */
 export const Dark: Story = {
   globals: { theme: "dark" },
   play: async ({ canvas, globals }) => {
     const t = messages[globals.locale as Locale].theme;
     await expect(
-      canvas.getByRole("button", { name: t.dark }),
+      canvas.getByRole("button", { name: t.label }),
     ).toHaveAttribute("aria-pressed", "true");
     await expect(document.documentElement).toHaveClass("dark");
   },
 };
 
+/** A first visit, before any click: follows your OS setting. */
+export const FirstVisit: Story = {
+  globals: { theme: "system" },
+  play: async ({ canvas, globals }) => {
+    const t = messages[globals.locale as Locale].theme;
+    const osIsDark = matchMedia("(prefers-color-scheme: dark)").matches;
+    await expect(
+      canvas.getByRole("button", { name: t.label }),
+    ).toHaveAttribute("aria-pressed", String(osIsDark));
+  },
+};
+
 // Interaction test: runs in `pnpm test`, hidden from the Storybook sidebar
 // ("!dev") because it changes the state on its own.
-export const ClickingDarkSavesTheChoice: Story = {
+export const ClickingSwitchesAndSavesTheChoice: Story = {
   tags: ["!dev"],
   globals: { theme: "light" },
   play: async ({ canvas, globals, userEvent }) => {
     const t = messages[globals.locale as Locale].theme;
-    const dark = canvas.getByRole("button", { name: t.dark });
+    const button = canvas.getByRole("button", { name: t.label });
 
-    await userEvent.click(dark);
-
-    await expect(dark).toHaveAttribute("aria-pressed", "true");
-    await expect(
-      canvas.getByRole("button", { name: t.light }),
-    ).toHaveAttribute("aria-pressed", "false");
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute("aria-pressed", "true");
     await expect(document.documentElement).toHaveClass("dark");
     await expect(localStorage.getItem("theme")).toBe("dark");
+
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute("aria-pressed", "false");
+    await expect(document.documentElement).not.toHaveClass("dark");
+    await expect(localStorage.getItem("theme")).toBe("light");
   },
 };

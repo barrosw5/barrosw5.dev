@@ -1,9 +1,9 @@
 /**
  * Light/dark mode.
  *
- * The visitor picks "light", "dark" or "system" (follow the OS setting). The
- * choice is saved in localStorage, and the `dark` class on <html> switches the
- * colours defined in globals.css.
+ * A first visit follows the OS setting ("system"). Once the visitor switches
+ * to "light" or "dark", that choice is saved in localStorage and wins on the
+ * next visits. The `dark` class on <html> switches the colours in globals.css.
  */
 
 export const themePreferences = ["light", "dark", "system"] as const;
@@ -27,16 +27,43 @@ export function getThemePreference(): ThemePreference {
   }
 }
 
+/** True when the preference means dark: "dark", or "system" on a dark OS. */
+export function resolvesToDark(preference = getThemePreference()) {
+  return (
+    preference === "dark" ||
+    (preference === "system" && window.matchMedia(DARK_QUERY).matches)
+  );
+}
+
 /** Puts the `dark` class on <html> when the preference resolves to dark. */
 export function applyTheme(preference = getThemePreference()) {
-  const isDark =
-    preference === "dark" ||
-    (preference === "system" && window.matchMedia(DARK_QUERY).matches);
+  const isDark = resolvesToDark(preference);
 
   const root = document.documentElement;
   root.classList.toggle("dark", isDark);
   // Also switches native UI (scrollbars, form controls) to dark
   root.style.colorScheme = isDark ? "dark" : "light";
+}
+
+/**
+ * Puts the theme back after React redraws <html> (switching language does
+ * that and wipes the `dark` class), without animating anything: for a moment
+ * the page was "light", and every CSS transition (the ThemeToggle icons,
+ * colours) would otherwise play from light back to dark.
+ */
+export function restoreTheme() {
+  const noTransitions = document.createElement("style");
+  noTransitions.textContent =
+    "*,*::before,*::after{transition:none!important}";
+  document.head.appendChild(noTransitions);
+
+  applyTheme();
+
+  // Make the browser compute the styles now, while transitions are off, so
+  // any transition already started is cancelled at its end state
+  void getComputedStyle(document.documentElement).color;
+  // Turn transitions back on once those styles are in place
+  setTimeout(() => noTransitions.remove(), 1);
 }
 
 /** Saves the choice, applies it and tells subscribers it changed. */
