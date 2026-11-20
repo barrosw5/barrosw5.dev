@@ -140,4 +140,5 @@ A feature is only done when it works in both languages, in light and dark mode, 
 
 ### Extras (later)
 - [ ] Custom domain
+- [x] Visit statistics and real-world speed: Vercel Web Analytics + Speed Insights (free plan, no cookies)
 - [ ] Easter eggs: Zelda and Undertale/Deltarune references (ideas in [docs/DESIGN.md](docs/DESIGN.md))

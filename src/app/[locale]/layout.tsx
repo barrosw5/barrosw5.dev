@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locale as rootLocale } from "next/root-params";
 
+import { SiteAnalytics } from "@/analytics/SiteAnalytics";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { languageTags, routing } from "@/i18n/routing";
@@ -51,6 +52,9 @@ export default async function LocaleLayout({
           </main>
           <SiteFooter />
         </NextIntlClientProvider>
+        {/* Vercel sets VERCEL=1 when it builds the site: locally and on CI
+            there are no analytics (their scripts only exist on Vercel) */}
+        {process.env.VERCEL === "1" && <SiteAnalytics />}
       </body>
     </html>
   );
