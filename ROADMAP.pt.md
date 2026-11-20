@@ -68,7 +68,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] i18n: função `t()` + `en.json` / `pt.json` + idioma no URL (`/en`, `/pt`)
 - [x] Botão para mudar de idioma
 - [x] Modo escuro (botão + preferência do sistema)
-- [ ] Identidade visual — direção: 3 a 5 referências (o que gosto em cada uma), 3 palavras para o que o site deve transmitir, e como se adapta do telemóvel ao computador
+- [x] Identidade visual — direção: 3 a 5 referências (o que gosto em cada uma), 3 palavras para o que o site deve transmitir, e como se adapta do telemóvel ao computador
 - [ ] Identidade visual — design tokens no `globals.css`: paleta de cores (claro e escuro), tipos de letra, escala tipográfica, espaçamentos, cantos e breakpoints, tudo mobile-first
 - [ ] Identidade visual — aplicar aos componentes que já existem (LanguageSwitcher, ThemeToggle, Welcome) e confirmá-los no telemóvel e no computador no Storybook
 - [ ] Layout base: cabeçalho, navegação (menu no telemóvel + navegação no computador), rodapé (+ stories)
@@ -140,3 +140,4 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 
 ### Extras (depois)
 - [ ] Domínio próprio
+- [ ] Easter eggs: referências a Zelda e Undertale/Deltarune (ideias em [docs/DESIGN.md](docs/DESIGN.md))
