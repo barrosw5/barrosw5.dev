@@ -72,7 +72,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] Layout base: cabeçalho, navegação (menu no telemóvel + navegação no computador), rodapé (+ stories), páginas "em construção" e página 404
 - [x] Paleta de comandos ⌘K / Ctrl+K (computador; mostra ⌘ no Mac e Ctrl nos outros)
 - [x] Setup de testes e2e com Playwright (+ job no CI)
-- [ ] Projeto Supabase + variáveis de ambiente (`.env.example`)
+- [x] Projeto Supabase + variáveis de ambiente (`.env.example`)
 - [ ] Deploy na Vercel (com deploy de preview em cada PR)
 
 ### Fase 1 — Autenticação e admin
