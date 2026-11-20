@@ -59,7 +59,7 @@ A fase 0 monta as bases. A partir daí, cada fase é **uma funcionalidade feita 
 BD → API (core/api, documentada em docs/API.md) → Service → Hook → Componentes (+ stories, en/pt) → Página → Testes
 ```
 
-Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo claro e escuro, e com o CI verde.
+Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo claro e escuro, no telemóvel e no computador, e com o CI verde.
 
 ### Fase 0 — Bases
 - [x] Setup Next.js + TypeScript + Tailwind + shadcn/ui
@@ -68,7 +68,10 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] i18n: função `t()` + `en.json` / `pt.json` + idioma no URL (`/en`, `/pt`)
 - [x] Botão para mudar de idioma
 - [x] Modo escuro (botão + preferência do sistema)
-- [ ] Layout base: cabeçalho, navegação, rodapé (+ stories)
+- [ ] Identidade visual — direção: 3 a 5 referências (o que gosto em cada uma), 3 palavras para o que o site deve transmitir, e como se adapta do telemóvel ao computador
+- [ ] Identidade visual — design tokens no `globals.css`: paleta de cores (claro e escuro), tipos de letra, escala tipográfica, espaçamentos, cantos e breakpoints, tudo mobile-first
+- [ ] Identidade visual — aplicar aos componentes que já existem (LanguageSwitcher, ThemeToggle, Welcome) e confirmá-los no telemóvel e no computador no Storybook
+- [ ] Layout base: cabeçalho, navegação (menu no telemóvel + navegação no computador), rodapé (+ stories)
 - [ ] Setup de testes e2e com Playwright (+ job no CI)
 - [ ] Projeto Supabase + variáveis de ambiente (`.env.example`)
 - [ ] Deploy na Vercel (com deploy de preview em cada PR)

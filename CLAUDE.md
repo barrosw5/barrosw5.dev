@@ -49,6 +49,7 @@ Rules:
 
 - `src/i18n/` (languages) and `src/theme/` (light/dark mode) are site-wide infrastructure, outside the layers: any layer may import them.
 - Light/dark: the `dark` class on `<html>` switches the colours in `globals.css`; style components with Tailwind's `dark:` variant or the theme colours (`bg-background`, `text-muted-foreground`...), never hardcoded colours that only work in one mode.
+- **Responsive, mobile-first:** every page and component works and looks right on mobile and desktop. Write the mobile styles first and add larger screens with Tailwind breakpoints (`md:`, `lg:`), never the other way round. Check every story at mobile and desktop widths with the Storybook viewport toolbar.
 - **Never create `src/pages/`**: in Next.js that folder turns on the Pages Router and clashes with `app/`. The "Pages" layer is the `page.tsx` (and `layout.tsx`) files inside `src/app/`.
 - Never skip layers: a component does not call `core/services/` or `core/api/`; a hook does not call `core/api/`.
 - Naming: components `PascalCase.tsx`, hooks `useThing.ts`, APIs `thingApi.ts`, services `thingService.ts`.

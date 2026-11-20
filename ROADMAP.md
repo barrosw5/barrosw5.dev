@@ -59,7 +59,7 @@ Phase 0 lays the foundations. From then on, each phase is **one feature, done en
 DB → API (core/api, documented in docs/API.md) → Service → Hook → Components (+ stories, en/pt) → Page → Tests
 ```
 
-A feature is only done when it works in both languages, in light and dark mode, and with the CI green.
+A feature is only done when it works in both languages, in light and dark mode, on mobile and desktop, and with the CI green.
 
 ### Phase 0 — Foundations
 - [x] Set up Next.js + TypeScript + Tailwind + shadcn/ui
@@ -68,7 +68,10 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] i18n: `t()` function + `en.json` / `pt.json` + locale in the URL (`/en`, `/pt`)
 - [x] Language switcher
 - [x] Dark mode (toggle + system preference)
-- [ ] Base layout: header, navigation, footer (+ stories)
+- [ ] Visual identity — direction: 3–5 references (what I like in each), 3 words for how the site should feel, and how it adapts from mobile to desktop
+- [ ] Visual identity — design tokens in `globals.css`: colour palette (light and dark), fonts, type scale, spacing, radii and breakpoints, all mobile-first
+- [ ] Visual identity — apply to the existing components (LanguageSwitcher, ThemeToggle, Welcome) and check them on mobile and desktop in Storybook
+- [ ] Base layout: header, navigation (mobile menu + desktop nav), footer (+ stories)
 - [ ] Playwright e2e setup (+ CI job)
 - [ ] Supabase project + environment variables (`.env.example`)
 - [ ] Deploy to Vercel (with a preview deploy on each PR)
