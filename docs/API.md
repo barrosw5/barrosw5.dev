@@ -111,17 +111,25 @@ dashboard → the project → **Analytics** / **Speed Insights**.
 | Plan | Hobby (free): Web Analytics 50 000 events/month, 1 month of history; Speed Insights 10 000 events over the last 30 days. Over the limit, collection pauses (nothing is charged) |
 | Filter | Visits from automated browsers (`navigator.webdriver`, e.g. our Playwright tests) are dropped in `beforeSend` and never sent |
 
-The scripts call these paths on the site's own domain; Vercel serves them
-once each product is enabled in the dashboard:
+The packages ask for `/_vercel/insights/script.js` and
+`/_vercel/speed-insights/script.js`, but on the live site Vercel serves both
+from **random paths of the project** (so content blockers don't recognise
+them). Seen on production on 2026-11-20:
 
-| Method | Path | What |
+| Method | Path (production) | What |
 |---|---|---|
-| `GET` | `/_vercel/insights/script.js` | Web Analytics script; it then sends each page view to Vercel under `/_vercel/insights/` |
-| `POST` | `/_vercel/insights/event` | Custom events (not used yet) |
-| `GET` | `/_vercel/speed-insights/script.js` | Speed Insights script; it then sends the page's Core Web Vitals under `/_vercel/speed-insights/` |
+| `GET` | `/59d6db039b8c6758/script.js` | Web Analytics script |
+| `POST` | `/59d6db039b8c6758/view` | One page view, sent on every page (also client-side navigations) |
+| `GET` | `/044f2daf49ade419/script.js` | Speed Insights script |
+| `POST` | `/044f2daf49ade419/vitals` | The page's Core Web Vitals, sent when the visitor leaves or hides the page |
 
-The exact sending endpoints live inside Vercel's scripts, not in our code or
-the npm packages; check the browser's Network tab on the live site to see them.
+The random part is Vercel's and may change; read the current one in the
+browser's Network tab. Locally there is nothing: the components only render
+on Vercel.
+
+Checked on production: an automated browser (`navigator.webdriver`, or a
+"HeadlessChrome" user agent, which Vercel's scripts skip on their own) sends
+nothing; a normal browser sends the requests above.
 
 ### Errors
 
@@ -129,4 +137,4 @@ the npm packages; check the browser's Network tab on the live site to see them.
 |---|---|
 | The product isn't enabled in the dashboard | The script answers `404`; nothing is collected, the page works normally |
 | The free limit is reached | Collection pauses until the next period (Web Analytics) or for at least 14 days (Speed Insights) |
-| A content blocker (e.g. uBlock Origin) blocks the script | That visit isn't counted; the page works normally |
+| A content blocker manages to block the script anyway | That visit isn't counted; the page works normally |
