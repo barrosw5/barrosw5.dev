@@ -47,7 +47,7 @@ Structure in `src/`:
 
 Rules:
 
-- `src/i18n/` (languages) and `src/theme/` (light/dark mode) are site-wide infrastructure, outside the layers: any layer may import them.
+- `src/i18n/` (languages), `src/theme/` (light/dark mode) and `src/analytics/` (Vercel Web Analytics + Speed Insights, only on Vercel) are site-wide infrastructure, outside the layers: any layer may import them.
 - **Visual design follows [docs/DESIGN.md](docs/DESIGN.md)** (monochrome, calm motion, two-tone headlines, Geist / Geist Mono). Read it before building or restyling any UI; colours from the reserved easter-egg palette never go in the regular UI.
 - **Style with the design tokens** in `src/app/globals.css`, through their Tailwind classes: colours (`bg-background`, `text-muted-foreground`...), type scale (`text-display`, `text-headline`, `text-title`, then Tailwind's `text-base`/`text-sm`/`text-xs`), layout spacing (`px-gutter`, `py-section`, `max-w-page`) and corners (`rounded-*`). Never raw values (`#fff`, `text-[42px]`, `p-[13px]`). A new value becomes a token first. The tokens are drawn in Storybook under *Foundations/Design tokens*.
 - Light/dark: the `dark` class on `<html>` switches the colours in `globals.css`; style components with Tailwind's `dark:` variant or the theme colours (`bg-background`, `text-muted-foreground`...), never hardcoded colours that only work in one mode.

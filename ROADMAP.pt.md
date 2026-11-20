@@ -140,4 +140,5 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 
 ### Extras (depois)
 - [ ] Domínio próprio
+- [x] Estatísticas de visitas e de velocidade real: Vercel Web Analytics + Speed Insights (plano gratuito, sem cookies)
 - [ ] Easter eggs: referências a Zelda e Undertale/Deltarune (ideias em [docs/DESIGN.md](docs/DESIGN.md))
