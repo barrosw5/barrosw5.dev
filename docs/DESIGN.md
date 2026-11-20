@@ -60,9 +60,19 @@ monochrome site that rewards people who explore it.
 
 - **Home:** two-tone intro (name + one line), then the **projects one at a
   time** with a counter (`N°03/12`). A toggle switches to a **grid** view.
-- **About / now:** a **bento** of 4–6 large, airy cards (stack, what I'm doing
-  now, local time in Lisbon, contacts). Never crowded.
-- **Navigation:** a floating pill; **⌘K** command palette on desktop.
+- **Pages:** Home, Projects, About, Wishlist. Pages not built yet show an
+  "under construction" message; unknown addresses show a 404 with the same
+  look (mono label, two-tone headline, back home).
+- **About:** a **bento** of 4–6 large, airy cards (experience, stack, what I'm
+  doing now, contacts, the CV). Never crowded.
+- **One screen at a time on desktop:** pages fit the screen and don't scroll
+  like a long document. On Home/Projects, scrolling moves from one project to
+  the next. On the phone pages do scroll (e.g. the About bento stacks into one
+  column), and scrolling also moves between projects.
+- **Navigation:** a floating pill, always fixed (it never scrolls away); **⌘K**
+  command palette on desktop.
+- **Footer:** where I am (Lisbon or the Azores) with its local time and a red
+  "live" dot, profile links, copyright. Small Geist Mono text.
 
 ## Mobile and desktop
 
@@ -72,7 +82,8 @@ Mobile-first: design the phone version first, then add room on larger screens.
 |---|---|
 | Bento in several columns | One column; small cards side by side |
 | Projects one at a time on scroll | Same, full-width cards with swipe |
-| Navigation pill at the top | Navigation pill at the **bottom**, within thumb reach |
+| Navigation pill at the top, centred, with page names | Navigation pill at the **bottom**, within thumb reach: page icons, only the current page named |
+| Theme and language buttons in the top right corner | Theme and language buttons inside the bottom pill |
 | crtl+K command palette | Menu/search button |
 | Hover reveals details | Tap reveals details |
 

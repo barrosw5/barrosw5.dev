@@ -7,10 +7,8 @@ A personal site that works as a portfolio/CV and is useful day to day. All conte
 ## Features
 
 ### Public
-- **About me** — introduction, skills, contacts
+- **About** — introduction, experience, skills, what I'm doing right now, contacts and the CV (view and download the PDF)
 - **Projects** — GitHub repos (via the API), with selection, order and descriptions chosen in the admin
-- **CV** — view and download the PDF
-- **/now** — what I'm doing right now
 - **Wishlist** — items with link, current price, priority and price history; visitors can reserve an item ("I'll give this one")
 
 ### Admin (`/admin`, restricted access)
@@ -45,7 +43,7 @@ Rust worker (GitHub Actions cron, e.g. every 6 h)
 
 ## Data model (draft)
 
-- `profile` — about me, /now content, links, CV URL
+- `profile` — about me, "now" content, links, CV URL, current place (Lisbon/Azores)
 - `projects` — repo, visible, order, custom description
 - `wishlist_items` — name, URL, image, priority, current price, tracking on
 - `price_history` — item, price, date
@@ -71,7 +69,8 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Visual identity — direction: 3–5 references (what I like in each), 3 words for how the site should feel, and how it adapts from mobile to desktop
 - [x] Visual identity — design tokens in `globals.css`: colour palette (light and dark), fonts, type scale, spacing, radii and breakpoints, all mobile-first
 - [x] Visual identity — apply to the existing components (LanguageSwitcher, ThemeToggle, Welcome) and check them on mobile and desktop in Storybook
-- [ ] Base layout: header, navigation (mobile menu + desktop nav), footer (+ stories)
+- [x] Base layout: header, navigation (mobile menu + desktop nav), footer (+ stories), "under construction" pages and a 404 page
+- [ ] ⌘K / Ctrl+K command palette (desktop; shows ⌘ on Mac and Ctrl elsewhere)
 - [ ] Playwright e2e setup (+ CI job)
 - [ ] Supabase project + environment variables (`.env.example`)
 - [ ] Deploy to Vercel (with a preview deploy on each PR)
@@ -82,13 +81,14 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [ ] Admin layout and navigation (+ stories)
 - [ ] Tests: unit + e2e (access denied without login, allowed with it)
 
-### Phase 2 — About me and /now
+### Phase 2 — About (experience, now, contacts)
 - [ ] DB: `profile` table
 - [ ] API + service: `profileApi` / `profileService` (+ docs)
 - [ ] Hook: `useProfile`
-- [ ] Components: `AboutMe`, `NowSection` (+ stories)
-- [ ] Pages: home (about me) and `/now`
-- [ ] Admin: edit about me and /now (markdown)
+- [ ] Components: the About bento — experience, stack, what I'm doing now, contacts, local time (+ stories)
+- [ ] Pages: the home intro and `/about` (replaces the "under construction" page)
+- [ ] Admin: edit about and "now" (markdown), the current place (Lisbon/Azores) and the contacts
+- [ ] Decide the public contact email (personal, an alias or a separate address)
 - [ ] Tests
 
 ### Phase 3 — Projects
@@ -97,7 +97,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [ ] Service: merge GitHub data with the admin settings (visible, order, description)
 - [ ] Hook: `useProjects`
 - [ ] Components: `ProjectList`, `ProjectCard` (+ stories)
-- [ ] Page: `/projects`
+- [ ] Pages: `/projects` (replaces the "under construction" page) and the featured projects on the home page
 - [ ] Admin: show/hide, order and custom description
 - [ ] Tests
 
@@ -105,7 +105,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [ ] Storage: bucket for the CV in Supabase Storage
 - [ ] API + service + hook for the CV (+ docs)
 - [ ] Components: `CvViewer`, download button (+ stories)
-- [ ] Page: `/cv`
+- [ ] CV card on `/about` (view and download)
 - [ ] Admin: upload a new CV
 - [ ] Tests
 
@@ -114,7 +114,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [ ] API + service: `wishlistApi` / `wishlistService` (+ docs)
 - [ ] Hook: `useWishlist`
 - [ ] Components: `WishlistGrid`, `WishlistCard` (+ stories)
-- [ ] Page: `/wishlist` (read-only)
+- [ ] Page: `/wishlist`, read-only (replaces the "under construction" page)
 - [ ] Admin: add, edit and remove items
 - [ ] Tests
 

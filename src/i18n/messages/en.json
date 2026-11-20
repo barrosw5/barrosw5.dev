@@ -1,7 +1,8 @@
 {
   "metadata": {
     "title": "barrosw5.dev",
-    "description": "Portfolio, CV and day-to-day tools."
+    "description": "Portfolio, CV and day-to-day tools.",
+    "notFound": "Page not found"
   },
   "welcome": {
     "title": "barrosw5.dev",
@@ -20,5 +21,40 @@
   },
   "theme": {
     "label": "Dark mode"
+  },
+  "nav": {
+    "label": "Main",
+    "home": "Home",
+    "projects": "Projects",
+    "about": "About",
+    "wishlist": "Wishlist",
+    "skip": "Skip to content",
+    "preferences": "Preferences"
+  },
+  "footer": {
+    "places": {
+      "lisbon": "Lisbon",
+      "azores": "Azores"
+    },
+    "contacts": {
+      "label": "Contacts",
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "newTab": "(opens in a new tab)"
+    },
+    "copyright": "© {year} Martim Barros"
+  },
+  "pageMessage": {
+    "back": "Back to home",
+    "notFound": {
+      "label": "Error 404",
+      "title": "Page not found.",
+      "description": "This address leads nowhere."
+    },
+    "underConstruction": {
+      "label": "Under construction",
+      "title": "Still being built.",
+      "description": "This page is coming soon."
+    }
   }
 }
