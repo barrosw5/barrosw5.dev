@@ -1,54 +1,46 @@
 "use client";
 
-import { Monitor, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { Button } from "@/components/ui/button";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
-import { cn } from "@/lib/utils";
-import type { ThemePreference } from "@/theme/theme";
 
-const icons: Record<ThemePreference, typeof Sun> = {
-  light: Sun,
-  dark: Moon,
-  system: Monitor,
-};
+// Both icons are always there, stacked; the `dark` class on <html> decides
+// which one shows. CSS knows the theme before React loads (the script in
+// <head> sets the class), so the right icon appears with no flash.
+const icon =
+  "size-4.5 transition-all duration-300 ease-out motion-reduce:transition-none";
 
 /**
- * Three buttons: light, dark and follow the system. The selected one has
- * `aria-pressed`, so screen readers announce it as "pressed".
+ * One button that switches between light and dark mode. It shows the moon
+ * in light mode and the sun in dark mode, turning one into the other.
+ * Screen readers hear "Dark mode, toggle button, pressed / not pressed".
  */
 export function ThemeToggle() {
   const t = useTranslations("theme");
-  const { options, current, select } = useThemeToggle();
+  const { isDark, toggle } = useThemeToggle();
 
   return (
-    <div
-      role="group"
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={toggle}
+      // Unknown on the server (null), so the attribute is only added in
+      // the browser
+      aria-pressed={isDark ?? undefined}
       aria-label={t("label")}
-      className="flex items-center gap-1 rounded-lg border p-0.5"
+      title={t("label")}
+      className="relative size-10 rounded-full text-muted-foreground"
     >
-      {options.map((option) => {
-        const Icon = icons[option];
-        const isSelected = option === current;
-        return (
-          <button
-            key={option}
-            type="button"
-            onClick={() => select(option)}
-            aria-pressed={isSelected}
-            aria-label={t(option)}
-            title={t(option)}
-            className={cn(
-              "rounded-md p-1.5 transition-colors hover:bg-muted",
-              isSelected
-                ? "bg-muted text-foreground"
-                : "text-muted-foreground",
-            )}
-          >
-            <Icon className="size-4" aria-hidden />
-          </button>
-        );
-      })}
-    </div>
+      <Moon
+        aria-hidden
+        className={`${icon} dark:-rotate-90 dark:scale-0 dark:opacity-0`}
+      />
+      <Sun
+        aria-hidden
+        className={`${icon} absolute rotate-90 scale-0 opacity-0 dark:rotate-0 dark:scale-100 dark:opacity-100`}
+      />
+    </Button>
   );
 }

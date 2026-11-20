@@ -9,6 +9,8 @@ import { Welcome } from "./Welcome";
 const meta = {
   title: "Pages/Welcome",
   component: Welcome,
+  // The component has its own page padding (px-gutter)
+  parameters: { layout: "fullscreen" },
 } satisfies Meta<typeof Welcome>;
 
 export default meta;
@@ -18,6 +20,12 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvas, globals }) => {
     const t = messages[globals.locale as Locale].welcome;
-    await expect(canvas.getByText(t.description)).toBeVisible();
+    // One two-tone headline: the name, then the line in grey
+    await expect(
+      canvas.getByRole("heading", {
+        level: 1,
+        name: `${t.title} ${t.description}`,
+      }),
+    ).toBeVisible();
   },
 };

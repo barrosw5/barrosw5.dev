@@ -6,7 +6,7 @@ import { locale as rootLocale } from "next/root-params";
 
 import { languageTags, routing } from "@/i18n/routing";
 import { geistMono, geistSans } from "@/lib/fonts";
-import { themeScript } from "@/theme/theme";
+import { ThemeScript } from "@/theme/ThemeScript";
 
 import "../globals.css";
 
@@ -38,7 +38,7 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <ThemeScript />
       </head>
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>

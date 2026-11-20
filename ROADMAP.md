@@ -70,7 +70,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Dark mode (toggle + system preference)
 - [x] Visual identity — direction: 3–5 references (what I like in each), 3 words for how the site should feel, and how it adapts from mobile to desktop
 - [x] Visual identity — design tokens in `globals.css`: colour palette (light and dark), fonts, type scale, spacing, radii and breakpoints, all mobile-first
-- [ ] Visual identity — apply to the existing components (LanguageSwitcher, ThemeToggle, Welcome) and check them on mobile and desktop in Storybook
+- [x] Visual identity — apply to the existing components (LanguageSwitcher, ThemeToggle, Welcome) and check them on mobile and desktop in Storybook
 - [ ] Base layout: header, navigation (mobile menu + desktop nav), footer (+ stories)
 - [ ] Playwright e2e setup (+ CI job)
 - [ ] Supabase project + environment variables (`.env.example`)

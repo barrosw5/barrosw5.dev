@@ -1,38 +1,40 @@
-import { useSyncExternalStore } from "react";
+import { useLayoutEffect, useSyncExternalStore } from "react";
 
 import {
-  getThemePreference,
+  resolvesToDark,
+  restoreTheme,
   setThemePreference,
   subscribeToTheme,
-  themePreferences,
-  type ThemePreference,
 } from "@/theme/theme";
 
 export interface ThemeToggleState {
-  /** All choices, in display order. */
-  options: readonly ThemePreference[];
   /**
-   * The current choice, or `null` while rendering on the server (it only
-   * knows the visitor's choice once the page runs in the browser).
+   * Whether the page is dark right now, or `null` while rendering on the
+   * server (it only knows the visitor's OS and choice in the browser).
    */
-  current: ThemePreference | null;
-  select: (preference: ThemePreference) => void;
+  isDark: boolean | null;
+  /** Switches to the other mode and saves the choice. */
+  toggle: () => void;
 }
 
 /**
- * Reads and changes the light/dark preference, and re-renders when it
- * changes (also from another tab or the OS).
+ * Reads and switches light/dark mode, and re-renders when it changes (also
+ * from another tab or the OS). Until the visitor clicks, it follows the OS.
  */
 export function useThemeToggle(): ThemeToggleState {
-  const current = useSyncExternalStore(
+  // Switching language re-renders the root layout, and React then resets
+  // <html> to the attributes in its JSX, wiping the `dark` class the head
+  // script added. Put it back before the browser paints, without animating.
+  useLayoutEffect(() => restoreTheme(), []);
+
+  const isDark = useSyncExternalStore(
     subscribeToTheme,
-    getThemePreference, // in the browser
+    () => resolvesToDark(), // in the browser
     () => null, // on the server
   );
 
   return {
-    options: themePreferences,
-    current,
-    select: setThemePreference,
+    isDark,
+    toggle: () => setThemePreference(resolvesToDark() ? "light" : "dark"),
   };
 }

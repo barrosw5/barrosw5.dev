@@ -46,8 +46,12 @@ monochrome site that rewards people who explore it.
 
 - Short and soft: quick ease-out transitions, nothing bouncy or slow.
 - **Numbers cross-fade** when they change (stats, wishlist prices).
+- **Two-state controls are one round button** whose content swaps with a
+  short animation: ThemeToggle turns the moon into the sun (rotate + fade),
+  LanguageSwitcher slides in the other language's code (EN ↔ PT). Both start
+  from the visitor's system: OS light/dark, browser language.
 - **Segmented controls have a sliding pill** behind the selected option
-  (ThemeToggle, LanguageSwitcher, projects view toggle).
+  (projects view toggle).
 - Images and headlines **reveal on scroll**.
 - **`prefers-reduced-motion` is always respected**: with it on, things appear
   without moving.
