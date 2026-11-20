@@ -67,7 +67,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] CI (GitHub Actions: lint, typecheck, tests, build, CodeQL, PR title) + protected `main`
 - [x] i18n: `t()` function + `en.json` / `pt.json` + locale in the URL (`/en`, `/pt`)
 - [x] Language switcher
-- [ ] Dark mode (toggle + system preference)
+- [x] Dark mode (toggle + system preference)
 - [ ] Base layout: header, navigation, footer (+ stories)
 - [ ] Playwright e2e setup (+ CI job)
 - [ ] Supabase project + environment variables (`.env.example`)

@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect } from "storybook/test";
 
+import { messages } from "@/i18n/messages";
+import type { Locale } from "@/i18n/routing";
+
 import { Welcome } from "./Welcome";
-import en from "@/i18n/messages/en.json";
-import pt from "@/i18n/messages/pt.json";
 
 const meta = {
   title: "Pages/Welcome",
@@ -13,16 +14,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const English: Story = {
-  globals: { locale: "en" },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(en.welcome.description)).toBeVisible();
-  },
-};
-
-export const Portuguese: Story = {
-  globals: { locale: "pt" },
-  play: async ({ canvas }) => {
-    await expect(canvas.getByText(pt.welcome.description)).toBeVisible();
+// Follows the toolbar language and theme
+export const Default: Story = {
+  play: async ({ canvas, globals }) => {
+    const t = messages[globals.locale as Locale].welcome;
+    await expect(canvas.getByText(t.description)).toBeVisible();
   },
 };

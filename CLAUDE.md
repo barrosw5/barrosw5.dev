@@ -47,6 +47,8 @@ Structure in `src/`:
 
 Rules:
 
+- `src/i18n/` (languages) and `src/theme/` (light/dark mode) are site-wide infrastructure, outside the layers: any layer may import them.
+- Light/dark: the `dark` class on `<html>` switches the colours in `globals.css`; style components with Tailwind's `dark:` variant or the theme colours (`bg-background`, `text-muted-foreground`...), never hardcoded colours that only work in one mode.
 - **Never create `src/pages/`**: in Next.js that folder turns on the Pages Router and clashes with `app/`. The "Pages" layer is the `page.tsx` (and `layout.tsx`) files inside `src/app/`.
 - Never skip layers: a component does not call `core/services/` or `core/api/`; a hook does not call `core/api/`.
 - Naming: components `PascalCase.tsx`, hooks `useThing.ts`, APIs `thingApi.ts`, services `thingService.ts`.
@@ -61,7 +63,10 @@ Rules:
 ## 4. Storybook for every component
 
 - **Every component in `components/` has a `.stories.tsx` file next to it**, covering the relevant states (default, loading, empty, error, disabled...).
-- Stories show the component in both languages (`en` and `pt`) and in light and dark mode.
+- **A story is a state**, named after it (`Empty`, `Loading`, `Dark`...), that the user opens and interacts with by hand. Its `play` only **checks** that state; it never clicks or changes it, so the story stays in the state its name says.
+- **Never pin the language** (`globals.locale`) in a story: stories follow the toolbar (🌐), so every story can be seen in `en` and `pt`. In `play`, read the expected text from `messages[globals.locale]` (`@/i18n/messages`), never hardcode it. Pin the theme only when the theme *is* the state (e.g. ThemeToggle's `Dark`).
+- **Interaction tests** (click, type, then check the result) go in separate stories tagged `tags: ["!dev"]`: hidden from the sidebar, still run by `pnpm test`.
+- The toolbar language and theme are kept in sync with the components by `.storybook/preview.tsx` (clicking a language link or a theme button updates the toolbar). That sync only exists in the Storybook UI, not in `pnpm test`, so don't write tests that depend on it.
 - Stories run as tests (`@storybook/addon-vitest`) and CI runs `build-storybook`: a broken story blocks the PR.
 
 ## 5. Git, CI and the `main` branch

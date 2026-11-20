@@ -1,12 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect } from "storybook/test";
 
-import en from "@/i18n/messages/en.json";
-import pt from "@/i18n/messages/pt.json";
+import { messages } from "@/i18n/messages";
+import { routing, type Locale } from "@/i18n/routing";
 
 import { LanguageSwitcher } from "./LanguageSwitcher";
-
-const { languages } = en.languageSwitcher;
 
 const meta = {
   title: "Components/LanguageSwitcher",
@@ -14,7 +12,8 @@ const meta = {
   parameters: {
     nextjs: {
       // The component uses next/navigation (through next-intl), which needs
-      // Storybook's App Router mock. Pretend we are on the wishlist page.
+      // Storybook's App Router mock. Pretend we are on the wishlist page, to
+      // check the links keep the page and only change the language.
       appDirectory: true,
       navigation: { pathname: "/en/wishlist" },
     },
@@ -24,41 +23,29 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const English: Story = {
-  globals: { locale: "en" },
-  play: async ({ canvas }) => {
-    // The nav is labelled in the current language
+// Follows the toolbar language. Click the other language to switch: the
+// toolbar changes too, like the page would on the site (that switching is a
+// Storybook helper in .storybook/preview.tsx; the real navigation is covered
+// by the e2e tests).
+export const Default: Story = {
+  play: async ({ canvas, globals }) => {
+    const current = globals.locale as Locale;
+    const t = messages[current].languageSwitcher;
+
     await expect(
-      canvas.getByRole("navigation", { name: en.languageSwitcher.label }),
+      canvas.getByRole("navigation", { name: t.label }),
     ).toBeVisible();
 
-    // Each link points to the same page in its language
-    const english = canvas.getByRole("link", { name: languages.en });
-    const portuguese = canvas.getByRole("link", { name: languages.pt });
-    await expect(english).toHaveAttribute("href", "/en/wishlist");
-    await expect(portuguese).toHaveAttribute("href", "/pt/wishlist");
-
-    // Only the current language is marked as current
-    await expect(english).toHaveAttribute("aria-current", "true");
-    await expect(portuguese).not.toHaveAttribute("aria-current");
-  },
-};
-
-export const Portuguese: Story = {
-  globals: { locale: "pt" },
-  parameters: {
-    nextjs: { navigation: { pathname: "/pt/wishlist" } },
-  },
-  play: async ({ canvas }) => {
-    await expect(
-      canvas.getByRole("navigation", { name: pt.languageSwitcher.label }),
-    ).toBeVisible();
-
-    await expect(
-      canvas.getByRole("link", { name: languages.pt }),
-    ).toHaveAttribute("aria-current", "true");
-    await expect(
-      canvas.getByRole("link", { name: languages.en }),
-    ).not.toHaveAttribute("aria-current");
+    for (const locale of routing.locales) {
+      const link = canvas.getByRole("link", { name: t.languages[locale] });
+      // Same page, in that language
+      await expect(link).toHaveAttribute("href", `/${locale}/wishlist`);
+      // Only the current language is marked
+      if (locale === current) {
+        await expect(link).toHaveAttribute("aria-current", "true");
+      } else {
+        await expect(link).not.toHaveAttribute("aria-current");
+      }
+    }
   },
 };
