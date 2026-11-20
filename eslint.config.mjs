@@ -18,8 +18,17 @@ const eslintConfig = defineConfig([
     // Build output of `pnpm build-storybook` and test coverage
     "storybook-static/**",
     "coverage/**",
+    // Playwright reports
+    "playwright-report/**",
+    "test-results/**",
   ]),
-  ...storybook.configs["flat/recommended"]
+  ...storybook.configs["flat/recommended"],
+  {
+    // Playwright tests have no React: their fixtures call a function named
+    // `use`, which the React hooks rule mistakes for React's use()
+    files: ["e2e/**"],
+    rules: { "react-hooks/rules-of-hooks": "off" },
+  },
 ]);
 
 export default eslintConfig;

@@ -73,9 +73,19 @@ Rules:
 - The toolbar language and theme are kept in sync with the components by `.storybook/preview.tsx` (clicking a language link or a theme button updates the toolbar). That sync only exists in the Storybook UI, not in `pnpm test`, so don't write tests that depend on it.
 - Stories run as tests (`@storybook/addon-vitest`) and CI runs `build-storybook`: a broken story blocks the PR.
 
-## 5. Git, CI and the `main` branch
+## 5. End-to-end tests (Playwright)
+
+- `e2e/` tests the **whole site**, built for production, in real browsers: Chromium, Firefox and WebKit on desktop, plus an Android and an iPhone (`playwright.config.ts`). Storybook tests one component; e2e tests how they work together (routing, proxy, language, theme, navigation).
+- Every user-facing flow gets an e2e test, and **every bug found by hand gets a regression test** that fails when the bug comes back (check it does, by putting the bug back once).
+- One spec file per area (`i18n`, `theme`, `navigation`, `layout`, `command-palette`...). Import `test`/`expect` from `e2e/fixtures.ts`, not from `@playwright/test`: it fails the test on any console error and gives `open(path)`, which waits for hydration.
+- Never hardcode texts: read them from the translations with `text(locale)`. Find elements by role and accessible name (`getByRole`), like a visitor would; CSS locators also match the hidden copies of pages Next keeps for "back" (use `visibleFooter`, `.filter({ visible: true })`).
+- Desktop-only or phone-only tests skip the other with `test.skip(({ isMobile }) => ...)`, saying why.
+- Run with `pnpm test:e2e` (builds and serves on port 3123, never 3000) or `pnpm test:e2e:ui` to watch them.
+- On CI they run inside Playwright's Docker image (`mcr.microsoft.com/playwright:vX.Y.Z-noble` in `.github/workflows/ci.yml`). **Its tag must match the `@playwright/test` version in `package.json`**: when one is bumped, bump the other in the same PR.
+
+## 6. Git, CI and the `main` branch
 
 - **`main` is protected: never commit or push directly to `main`.** All work goes through a branch + Pull Request.
-- A PR can only be merged with the GitHub Actions checks green (`.github/workflows/`): lint, typecheck, tests, build and Storybook build, CodeQL, and PR title.
+- A PR can only be merged with the GitHub Actions checks green (`.github/workflows/`): lint, typecheck, tests, build and Storybook build, e2e tests, CodeQL, and PR title.
 - **Squash** merge: the PR title becomes the commit message on `main`, so it follows **Conventional Commits** (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`, `perf`).
-- Before opening a PR, run locally: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm build-storybook`.
+- Before opening a PR, run locally: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm build-storybook`, `pnpm test:e2e`.
