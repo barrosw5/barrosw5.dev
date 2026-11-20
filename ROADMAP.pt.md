@@ -73,7 +73,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] Paleta de comandos ⌘K / Ctrl+K (computador; mostra ⌘ no Mac e Ctrl nos outros)
 - [x] Setup de testes e2e com Playwright (+ job no CI)
 - [x] Projeto Supabase + variáveis de ambiente (`.env.example`)
-- [ ] Deploy na Vercel (com deploy de preview em cada PR)
+- [x] Deploy na Vercel (com deploy de preview em cada PR)
 
 ### Fase 1 — Autenticação e admin
 - [ ] Login com GitHub (Supabase Auth), restrito ao meu ID

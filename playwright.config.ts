@@ -6,9 +6,14 @@ import { defineConfig, devices } from "@playwright/test";
  * `pnpm test:e2e` (or `pnpm test:e2e:ui` to watch them step by step).
  *
  * Port 3123, not 3000, so they never clash with your `pnpm dev`.
+ *
+ * To test a site that is already online instead (production, or a Vercel
+ * preview), give its address: nothing is built or served locally.
+ *   E2E_BASE_URL=https://barrosw5-dev.vercel.app pnpm test:e2e
  */
 const PORT = 3123;
-const baseURL = `http://localhost:${PORT}`;
+const deployedURL = process.env.E2E_BASE_URL;
+const baseURL = deployedURL ?? `http://localhost:${PORT}`;
 const isCI = !!process.env.CI;
 
 export default defineConfig({
@@ -44,10 +49,12 @@ export default defineConfig({
   // Builds the site and serves it before the tests (as the Next.js docs
   // recommend: test the production build, not `next dev`). Locally, an
   // already running `pnpm start -p 3123` is reused.
-  webServer: {
-    command: `pnpm build && pnpm start -p ${PORT}`,
-    url: `${baseURL}/en`,
-    reuseExistingServer: !isCI,
-    timeout: 240_000,
-  },
+  webServer: deployedURL
+    ? undefined
+    : {
+        command: `pnpm build && pnpm start -p ${PORT}`,
+        url: `${baseURL}/en`,
+        reuseExistingServer: !isCI,
+        timeout: 240_000,
+      },
 });
