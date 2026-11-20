@@ -44,7 +44,17 @@ jobs:
     # Also a required check: keep the name in sync with branch protection
     name: E2E (Playwright)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
+    # Playwright's official image: the three browsers (Chromium, Firefox,
+    # WebKit) and all their system libraries are already installed, so
+    # nothing is downloaded from apt on every run (that took minutes and
+    # once hung for 20). The tag MUST match the @playwright/test version in
+    # package.json: when Dependabot bumps Playwright, bump it here too.
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
+      # The runner's user, so files in the checkout stay writable (and
+      # Firefox doesn't refuse to start as root with a foreign HOME)
+      options: --user 1001
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -53,10 +63,11 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # The three engines: Chromium (Chrome, Edge, Android), Firefox and
-      # WebKit (Safari, every iPhone browser), with their system libraries
-      - name: Install browsers for Playwright
-        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      # Safety net for when package.json gets ahead of the image tag: with
+      # matching versions this finds the image's browsers and does nothing;
+      # otherwise it downloads just the browsers (not the system libraries)
+      - name: Check the browsers match Playwright's version
+        run: pnpm exec playwright install chromium firefox webkit
       # playwright.config.ts builds the site and serves it on port 3123
       - run: pnpm test:e2e
       # When something fails, keep the report (screenshots, traces) to

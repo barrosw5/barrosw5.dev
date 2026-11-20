@@ -81,6 +81,7 @@ Rules:
 - Never hardcode texts: read them from the translations with `text(locale)`. Find elements by role and accessible name (`getByRole`), like a visitor would; CSS locators also match the hidden copies of pages Next keeps for "back" (use `visibleFooter`, `.filter({ visible: true })`).
 - Desktop-only or phone-only tests skip the other with `test.skip(({ isMobile }) => ...)`, saying why.
 - Run with `pnpm test:e2e` (builds and serves on port 3123, never 3000) or `pnpm test:e2e:ui` to watch them.
+- On CI they run inside Playwright's Docker image (`mcr.microsoft.com/playwright:vX.Y.Z-noble` in `.github/workflows/ci.yml`). **Its tag must match the `@playwright/test` version in `package.json`**: when one is bumped, bump the other in the same PR.
 
 ## 6. Git, CI and the `main` branch
 
