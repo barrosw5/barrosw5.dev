@@ -50,8 +50,9 @@ monochrome site that rewards people who explore it.
   short animation: ThemeToggle turns the moon into the sun (rotate + fade),
   LanguageSwitcher slides in the other language's code (EN ↔ PT). Both start
   from the visitor's system: OS light/dark, browser language.
-- **Segmented controls have a sliding pill** behind the selected option
-  (projects view toggle).
+- **Segmented controls have a sliding pill** behind the selected option: the
+  navigation pill (it slides to the page you go to) and the projects view
+  toggle.
 - Images and headlines **reveal on scroll**.
 - **`prefers-reduced-motion` is always respected**: with it on, things appear
   without moving.
@@ -84,7 +85,7 @@ Mobile-first: design the phone version first, then add room on larger screens.
 | Projects one at a time on scroll | Same, full-width cards with swipe |
 | Navigation pill at the top, centred, with page names | Navigation pill at the **bottom**, within thumb reach: page icons, only the current page named |
 | Theme and language buttons in the top right corner | Theme and language buttons inside the bottom pill |
-| crtl+K command palette | Menu/search button |
+| ⌘K / Ctrl+K command palette: pages, theme, language, links; its button in the top right shows ⌘ on a Mac and Ctrl elsewhere | No palette button: the bottom pill already has everything |
 | Hover reveals details | Tap reveals details |
 
 ## Easter eggs (extra, later)
@@ -95,7 +96,7 @@ deep. Ideas, none decided yet:
 - A small original pixel-art character walking around the site.
 - Achievements: "You found 3/7 secrets", saved in the browser.
 - 404 page as a "Game Over — Continue?" screen.
-- Hidden commands in the crtl+K palette.
+- Hidden commands in the ⌘K palette.
 
 **Only references and original work** (our own pixel art, jokes, names):
 never sprites, music or fonts taken from the games, which are copyrighted.
