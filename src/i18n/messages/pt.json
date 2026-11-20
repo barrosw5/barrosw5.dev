@@ -13,5 +13,11 @@
       "en": "English",
       "pt": "Português"
     }
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
   }
 }

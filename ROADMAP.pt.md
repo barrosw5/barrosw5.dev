@@ -67,7 +67,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] CI (GitHub Actions: lint, typecheck, testes, build, CodeQL, título do PR) + `main` protegida
 - [x] i18n: função `t()` + `en.json` / `pt.json` + idioma no URL (`/en`, `/pt`)
 - [x] Botão para mudar de idioma
-- [ ] Modo escuro (botão + preferência do sistema)
+- [x] Modo escuro (botão + preferência do sistema)
 - [ ] Layout base: cabeçalho, navegação, rodapé (+ stories)
 - [ ] Setup de testes e2e com Playwright (+ job no CI)
 - [ ] Projeto Supabase + variáveis de ambiente (`.env.example`)
