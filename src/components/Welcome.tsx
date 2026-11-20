@@ -8,11 +8,11 @@ export function Welcome() {
   const t = useTranslations("welcome");
 
   return (
-    <main className="mx-auto flex w-full max-w-page flex-1 flex-col justify-center px-gutter py-section">
+    <section className="mx-auto flex w-full max-w-page flex-1 flex-col justify-center px-gutter py-12 md:pt-24">
       <h1 className="max-w-4xl text-display text-balance">
         {t("title")}{" "}
         <span className="text-muted-foreground">{t("description")}</span>
       </h1>
-    </main>
+    </section>
   );
 }

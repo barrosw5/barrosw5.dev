@@ -12,6 +12,8 @@ const dirname =
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
+  // Same `@/` shortcut as tsconfig.json (`@/i18n/routing` → src/i18n/routing)
+  resolve: { alias: { '@': path.join(dirname, 'src') } },
   test: {
     projects: [
       {

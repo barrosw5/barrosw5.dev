@@ -4,6 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locale as rootLocale } from "next/root-params";
 
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import { languageTags, routing } from "@/i18n/routing";
 import { geistMono, geistSans } from "@/lib/fonts";
 import { ThemeScript } from "@/theme/ThemeScript";
@@ -18,7 +20,8 @@ export function generateStaticParams() {
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("metadata");
   return {
-    title: t("title"),
+    // Pages set their own title, e.g. "Projects · barrosw5.dev"
+    title: { default: t("title"), template: `%s · ${t("title")}` },
     description: t("description"),
   };
 }
@@ -41,7 +44,13 @@ export default async function LocaleLayout({
         <ThemeScript />
       </head>
       <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <SiteHeader />
+          <main id="content" className="flex flex-1 flex-col">
+            {children}
+          </main>
+          <SiteFooter />
+        </NextIntlClientProvider>
       </body>
     </html>
   );
