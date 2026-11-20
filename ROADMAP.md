@@ -72,7 +72,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Base layout: header, navigation (mobile menu + desktop nav), footer (+ stories), "under construction" pages and a 404 page
 - [x] ⌘K / Ctrl+K command palette (desktop; shows ⌘ on Mac and Ctrl elsewhere)
 - [x] Playwright e2e setup (+ CI job)
-- [ ] Supabase project + environment variables (`.env.example`)
+- [x] Supabase project + environment variables (`.env.example`)
 - [ ] Deploy to Vercel (with a preview deploy on each PR)
 
 ### Phase 1 — Auth and admin
