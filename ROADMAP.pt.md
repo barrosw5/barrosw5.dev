@@ -83,7 +83,7 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 
 ### Fase 2 — Sobre (experiência, agora, contactos)
 - [x] BD: tabela `profile`
-- [ ] API + service: `profileApi` / `profileService` (+ docs)
+- [x] API + service: `profileApi` / `profileService` (+ docs)
 - [ ] Hook: `useProfile`
 - [ ] Componentes: o bento do Sobre — sobre mim com o que estou a fazer agora e a hora local, experiência, stack, formação e certificados, contactos (+ stories)
 - [ ] Páginas: a apresentação no início e `/about` (substitui a página "em construção")

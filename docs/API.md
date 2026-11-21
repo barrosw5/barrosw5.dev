@@ -59,6 +59,7 @@ signed-in user's session goes in `Authorization: Bearer <access token>`.
 | `createSupabaseBrowserClient()` | `src/core/api/supabase/browserClient.ts` | Code running in the browser (Client Components) |
 | `createSupabaseServerClient()` | `src/core/api/supabase/serverClient.ts` | Server Components, Server Actions, Route Handlers |
 | `readProxySession()` | `src/core/api/supabase/proxyClient.ts` | `src/proxy.ts` |
+| `createSupabasePublicClient()` | `src/core/api/supabase/publicClient.ts` | Reading public data on the server. It has no cookies or session, so results can be cached with `"use cache"` |
 
 The server client reads the login session from the request cookies, so it is
 created once per request. Pages that use it depend on the request: with Cache
@@ -163,6 +164,23 @@ everything in it is public.
 Dates are `YYYY-MM`. An `endDate` of `null` means "present". Lists are stored in
 display order.
 
+Reading it:
+
+| Method | Path | Called from | Auth | Request | Success |
+|---|---|---|---|---|---|
+| `GET` | `/rest/v1/profile?select=about_en,about_pt,doing_now_en,doing_now_pt,current_place,experience,stack,education,certificates,contacts` | Server (`fetchProfileRow`) | `apikey` | `Accept: application/vnd.pgrst.object+json` | `200` with the row as one object |
+
+The site reads it through `getProfile()` in
+`src/core/services/profileServerService.ts`:
+
+- The result is cached for days with the tag `profile`.
+- The request gives up after 5 seconds.
+- If it fails, `getProfile()` doesn't throw. It logs the error and returns the
+  fallback profile (the current place, the GitHub and LinkedIn links, empty
+  About content), cached for only a few minutes.
+- Entries that don't have the fields above, and links that aren't `https:` or
+  `mailto:`, are left out by `toProfile()`.
+
 Example of one `experience` entry:
 
 ```json
@@ -186,6 +204,7 @@ Example of one `experience` entry:
 | A table that doesn't exist (or isn't exposed to the Data API) | `404` `{"code": "PGRST205", "message": "Could not find the table 'public.…' in the schema cache"}` |
 | Secret key used from a browser | Supabase answers `401` |
 | A query RLS doesn't allow | No error for reads: the rows are just not returned. Writes fail with Postgres error `42501` |
+| The `profile` row is missing | `406` `{"code": "PGRST116", "message": "Cannot coerce the result to a single JSON object"}`; `getProfile()` uses the fallback profile |
 | `redirect_to` isn't in the Redirect URLs | Supabase sends the browser to the Site URL instead of the callback |
 | Invalid, expired or reused sign-in code | `400` from `/auth/v1/token`; the callback redirects with `?error=failed` |
 | Sign-ups turned off and an unknown account signs in | Supabase refuses it; the callback redirects with `?error=failed` |
