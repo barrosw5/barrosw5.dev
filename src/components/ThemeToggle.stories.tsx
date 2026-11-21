@@ -62,9 +62,8 @@ export const ClickingSwitchesAndSavesTheChoice: Story = {
     const t = messages[globals.locale as Locale].theme;
     const button = canvas.getByRole("button", { name: t.label });
 
-    // Interrupting a view transition inside this test's frame drops the test
-    // browser's connection, so each click waits for the animation to end.
-    // Quick double clicks are tested on the real site (e2e/theme.spec.ts).
+    // A click during the animation is ignored (see e2e/theme.spec.ts), so
+    // each click here waits for the previous animation to end
     const animationEnded = () =>
       waitFor(
         () =>

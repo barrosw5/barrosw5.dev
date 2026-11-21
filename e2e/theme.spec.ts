@@ -54,25 +54,44 @@ test.describe("the theme button", () => {
     await expect(button).toHaveAttribute("aria-pressed", "true");
   });
 
-  test("a quick double click ends back on the first theme", async ({
-    page,
-    open,
-  }) => {
+  // Regression test: spamming the button used to flash between light and dark
+  test("ignores clicks until the animation ends", async ({ page, open }) => {
     await open("/en");
+    const html = page.locator("html");
     const button = page.getByRole("button", { name: en.theme.label });
 
     await button.click();
-    await button.click();
+    // Hold the animation still, so the clicks below are surely in the middle
+    await page.waitForFunction(() =>
+      document
+        .getAnimations()
+        .some((a) => (a as CSSAnimation).animationName?.startsWith("theme-")),
+    );
+    await page.evaluate(() => {
+      for (const animation of document.getAnimations()) animation.pause();
+    });
 
-    await expect(page.locator("html")).not.toHaveClass(/\bdark\b/);
+    // One at a time, with a pause: the theme changes a frame after a click, so
+    // clicks in a row could cancel each other out and hide a real problem
+    for (let i = 0; i < 3; i++) {
+      await button.evaluate((el) => (el as HTMLElement).click());
+      await page.waitForTimeout(150);
+      expect(
+        await page.evaluate(() => ({
+          dark: document.documentElement.classList.contains("dark"),
+          saved: localStorage.getItem("theme"),
+        })),
+      ).toEqual({ dark: true, saved: "dark" });
+    }
+
+    // Once it ends, the animation cleans up and the button works again
+    await page.evaluate(() => {
+      for (const animation of document.getAnimations()) animation.finish();
+    });
+    await expect(html).not.toHaveAttribute("data-theme-transition");
+    await button.click();
+    await expect(html).not.toHaveClass(/\bdark\b/);
     await expect(button).toHaveAttribute("aria-pressed", "false");
-    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
-      "light",
-    );
-    // The animation cleans up after itself
-    await expect(page.locator("html")).not.toHaveAttribute(
-      "data-theme-transition",
-    );
   });
 });
 

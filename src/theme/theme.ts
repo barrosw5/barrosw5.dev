@@ -79,27 +79,18 @@ export function restoreTheme() {
   setTimeout(() => noTransitions.remove(), 1);
 }
 
-function savePreference(preference: ThemePreference) {
+/** Saves the choice, applies it and tells subscribers it changed. */
+export function setThemePreference(preference: ThemePreference) {
   try {
     localStorage.setItem(STORAGE_KEY, preference);
   } catch {
     // Storage blocked (e.g. some private modes): still apply for this visit
   }
-}
-
-/** Applies the theme and tells subscribers it changed. */
-function publishTheme(preference: ThemePreference) {
   applyTheme(preference);
   window.dispatchEvent(new Event(CHANGE_EVENT));
 }
 
-/** Saves the choice, applies it and tells subscribers it changed. */
-export function setThemePreference(preference: ThemePreference) {
-  savePreference(preference);
-  publishTheme(preference);
-}
-
-/** The animation running now, so an older one can't clean up after a newer one. */
+/** The animation running now. While there is one, new switches are ignored. */
 let runningTransition: ViewTransition | null = null;
 
 /**
@@ -107,35 +98,34 @@ let runningTransition: ViewTransition | null = null;
  * browser photographs the page, the theme changes, and the CSS in globals.css
  * animates from the photo to the live page. Browsers without the API just
  * change the theme.
+ *
+ * Only one at a time: a call during an animation does nothing, so spamming
+ * the button can't flash the screen between light and dark.
  */
 export function setThemeWithTransition(
   preference: ThemePreference,
   transition: ThemeTransition = activeThemeTransition,
 ) {
+  if (runningTransition) return;
+
   if (!document.startViewTransition) {
     setThemePreference(preference);
     return;
   }
 
-  // Saved now, not in the callback (which runs a frame later), so a quick
-  // second click already sees this choice and switches back
-  savePreference(preference);
-
   const root = document.documentElement;
   root.dataset.themeTransition = transition;
 
-  const viewTransition = document.startViewTransition(() =>
-    publishTheme(preference),
+  runningTransition = document.startViewTransition(() =>
+    setThemePreference(preference),
   );
-  runningTransition = viewTransition;
 
-  // Rejects when the animation is skipped (a second click, a hidden tab). The
+  // Rejects when the browser skips the animation (e.g. a hidden tab). The
   // theme still changes, so that isn't an error
-  viewTransition.ready.catch(() => {});
-  viewTransition.finished
+  runningTransition.ready.catch(() => {});
+  runningTransition.finished
     .catch(() => {})
     .finally(() => {
-      if (runningTransition !== viewTransition) return;
       runningTransition = null;
       delete root.dataset.themeTransition;
     });

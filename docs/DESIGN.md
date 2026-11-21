@@ -56,6 +56,8 @@ monochrome site that rewards people who explore it.
   turns back on, opening dimmed (`crt`). `activeThemeTransition` in
   `src/theme/theme.ts` picks which one the site uses; compare them in Storybook
   under *Foundations/Theme transitions*. With reduced motion they only fade.
+  While one plays, new theme switches are ignored, so spamming the button
+  can't flash the screen.
 - **Segmented controls have a sliding pill** behind the selected option: the
   navigation pill (it slides to the page you go to) and the projects view
   toggle.
