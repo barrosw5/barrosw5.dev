@@ -123,6 +123,26 @@ const server = createServer(async (request, response) => {
 
   if (url.pathname === "/auth/v1/logout") return send(response, 204);
 
+  // The public profile. Its links differ from the site's fallback ones, so a
+  // test can tell that they really came from the database
+  if (url.pathname === "/rest/v1/profile") {
+    return send(response, 200, {
+      about_en: "",
+      about_pt: "",
+      doing_now_en: "",
+      doing_now_pt: "",
+      current_place: "lisbon",
+      experience: [],
+      stack: [],
+      education: [],
+      certificates: [],
+      contacts: [
+        { id: "github", href: "https://github.com/e2e-profile" },
+        { id: "linkedin", href: "https://www.linkedin.com/in/e2e-profile/" },
+      ],
+    });
+  }
+
   // For tests that start already signed in
   if (url.pathname === "/__test/session") {
     const account = url.searchParams.get("account");

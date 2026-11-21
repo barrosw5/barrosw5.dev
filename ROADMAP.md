@@ -84,7 +84,7 @@ A feature is only done when it works in both languages, in light and dark mode, 
 ### Phase 2 — About (experience, now, contacts)
 - [x] DB: `profile` table
 - [x] API + service: `profileApi` / `profileService` (+ docs)
-- [ ] Hook: `useProfile`
+- [x] Hook: `useProfile`
 - [ ] Components: the About bento — about me with what I'm doing now and the local time, experience, stack, education and certificates, contacts (+ stories)
 - [ ] Pages: the home intro and `/about` (replaces the "under construction" page)
 - [ ] Admin: edit every About card with form fields, the current place and the contacts (also shown in the footer)

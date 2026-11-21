@@ -1,8 +1,9 @@
-import { getContactLinks, getPlaces } from "@/core/services/profileService";
+import { getPlaces } from "@/core/services/profileService";
 import type { ContactLink, Place } from "@/core/types/profile";
 
 import { openCommandPalette } from "./useCommandPalette";
 import { useNow } from "./useNow";
+import { useProfile } from "./useProfile";
 import { useRepeatedTap } from "./useRepeatedTap";
 
 export interface SiteFooterData {
@@ -16,10 +17,12 @@ export interface SiteFooterData {
 
 /** What the footer shows: the places and their time, and my profile links. */
 export function useSiteFooter(): SiteFooterData {
+  const { currentPlace, contacts } = useProfile();
+
   return {
-    places: getPlaces(),
+    places: getPlaces(currentPlace),
     now: useNow(),
-    contacts: getContactLinks(),
+    contacts,
     onCopyrightTap: useRepeatedTap(5, openCommandPalette),
   };
 }

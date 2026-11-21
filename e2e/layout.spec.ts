@@ -278,9 +278,10 @@ test.describe("the footer", () => {
 
   test("opens my profiles in a new tab, safely", async ({ page, open }) => {
     await open("/en");
+    // Only the site: the exact address comes from the database (profile.spec.ts)
     for (const [id, href] of [
-      ["github", "https://github.com/barrosw5"],
-      ["linkedin", "https://www.linkedin.com/in/barrosw5-dev/"],
+      ["github", /^https:\/\/github\.com\//],
+      ["linkedin", /^https:\/\/www\.linkedin\.com\/in\//],
     ] as const) {
       const link = visibleFooter(page).getByRole("link", { name: new RegExp(en.footer.contacts[id]) });
       await expect(link).toHaveAttribute("href", href);

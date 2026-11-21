@@ -19,52 +19,29 @@ const timeZones: Record<PlaceId, string> = {
   amsterdam: "Europe/Amsterdam",
 };
 
-/**
- * Where I am right now.
- *
- * For now a fixed value; in phase 2 it comes from the `profile` table, so it
- * can be changed in the admin (e.g. to the Azores during the holidays).
- *
- * @returns The place and its time zone.
- */
-export function getCurrentPlace(): Place {
-  const id: PlaceId = "lisbon";
-  return { id, timeZone: timeZones[id] };
-}
+// Used until the database says otherwise, or if it can't be reached
+const DEFAULT_PLACE: PlaceId = "lisbon";
 
 /**
  * Every place on the footer's clock. To add a city: its id in `PlaceId`, its
  * time zone above, and its name in `footer.places` in both languages.
  *
- * @returns The places, starting with where I am right now.
+ * @param currentPlace Where I am right now.
+ * @returns The places, starting with where I am.
  */
-export function getPlaces(): Place[] {
-  const current = getCurrentPlace();
-  const others = (Object.keys(timeZones) as PlaceId[])
-    .filter((id) => id !== current.id)
-    .map((id) => ({ id, timeZone: timeZones[id] }));
-  return [current, ...others];
+export function getPlaces(currentPlace: PlaceId = DEFAULT_PLACE): Place[] {
+  const others = (Object.keys(timeZones) as PlaceId[]).filter(
+    (id) => id !== currentPlace,
+  );
+  return [currentPlace, ...others].map((id) => ({
+    id,
+    timeZone: timeZones[id],
+  }));
 }
 
 /**
- * My public profile links, in display order.
- *
- * For now fixed values; in phase 2 they come from the `profile` table. The
- * contact email is still to be decided (personal, an alias or a separate
- * address), so it isn't here yet.
- *
- * @returns The links, never empty.
- */
-export function getContactLinks(): ContactLink[] {
-  return [
-    { id: "github", href: "https://github.com/barrosw5" },
-    { id: "linkedin", href: "https://www.linkedin.com/in/barrosw5-dev/" },
-  ];
-}
-
-/**
- * What the site shows when the database can't be reached: the place and the
- * links it always had, and empty About content.
+ * What the site shows when the database can't be reached: the default place,
+ * my profile links and empty About content.
  *
  * @returns A complete profile.
  */
@@ -72,12 +49,15 @@ export function getFallbackProfile(): Profile {
   return {
     about: { en: "", pt: "" },
     doingNow: { en: "", pt: "" },
-    currentPlace: getCurrentPlace().id,
+    currentPlace: DEFAULT_PLACE,
     experience: [],
     stack: [],
     education: [],
     certificates: [],
-    contacts: getContactLinks(),
+    contacts: [
+      { id: "github", href: "https://github.com/barrosw5" },
+      { id: "linkedin", href: "https://www.linkedin.com/in/barrosw5-dev/" },
+    ],
   };
 }
 
@@ -156,7 +136,7 @@ export function toProfile(row: ProfileRow): Profile {
     doingNow: { en: row.doing_now_en, pt: row.doing_now_pt },
     currentPlace: isPlaceId(row.current_place)
       ? row.current_place
-      : getCurrentPlace().id,
+      : DEFAULT_PLACE,
     experience: keepValid(row.experience, isExperience),
     stack: keepValid(row.stack, isStackItem),
     education: keepValid(row.education, isEducation),

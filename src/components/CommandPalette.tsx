@@ -124,15 +124,19 @@ export function CommandPalette({
               </CommandItem>
             </CommandGroup>
 
-            <CommandSeparator />
-            <CommandGroup heading={t("groups.links")}>
-              {palette.contacts.map(({ id, href }) => (
-                <CommandItem key={id} onSelect={() => palette.openLink(href)}>
-                  <ArrowUpRight aria-hidden />
-                  {tFooter(`contacts.${id}`)}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {palette.contacts.length > 0 && (
+              <>
+                <CommandSeparator />
+                <CommandGroup heading={t("groups.links")}>
+                  {palette.contacts.map(({ id, href }) => (
+                    <CommandItem key={id} onSelect={() => palette.openLink(href)}>
+                      <ArrowUpRight aria-hidden />
+                      {tFooter(`contacts.${id}`)}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </>
+            )}
           </CommandList>
         </Command>
       </CommandDialog>

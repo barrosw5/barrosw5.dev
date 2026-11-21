@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { findUnlistedCommand } from "@/core/services/commandService";
-import { getContactLinks } from "@/core/services/profileService";
 import type { SealedCommand, UnlistedCommand } from "@/core/types/command";
 import type { ContactLink } from "@/core/types/profile";
 import { useRouter } from "@/i18n/navigation";
 
 import { useIsMac } from "./useIsMac";
 import { type LanguageTarget, useLanguageSwitcher } from "./useLanguageSwitcher";
+import { useProfile } from "./useProfile";
 import { type NavItem, useSiteNav } from "./useSiteNav";
 import { useThemeToggle } from "./useThemeToggle";
 
@@ -60,6 +60,7 @@ export function useCommandPalette(
   const pages = useSiteNav();
   const { isDark, toggle } = useThemeToggle();
   const language = useLanguageSwitcher();
+  const { contacts } = useProfile();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -116,7 +117,7 @@ export function useCommandPalette(
     pages,
     isDark,
     language,
-    contacts: getContactLinks(),
+    contacts,
     goTo: (href) => closeThen(() => router.push(href))(),
     toggleTheme: closeThen(toggle),
     switchLanguage: closeThen(() =>

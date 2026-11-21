@@ -35,7 +35,13 @@ export default defineConfig({
         // Prepared up front: found halfway through a run with an empty cache
         // (always, on CI), Vite reloads the page and the running stories fail
         optimizeDeps: {
-          include: ['@supabase/ssr', 'next-intl/server', 'next/headers'],
+          include: [
+            '@supabase/ssr',
+            '@supabase/supabase-js',
+            'next-intl/server',
+            'next/cache',
+            'next/headers',
+          ],
         },
         test: {
           name: 'storybook',

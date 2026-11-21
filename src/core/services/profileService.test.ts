@@ -3,17 +3,19 @@ import { describe, expect, it } from "vitest";
 import type { ProfileRow } from "@/core/types/profile";
 import { formatTime } from "@/core/utils/formatTime";
 
-import {
-  getContactLinks,
-  getCurrentPlace,
-  getFallbackProfile,
-  getPlaces,
-  toProfile,
-} from "./profileService";
+import { getFallbackProfile, getPlaces, toProfile } from "./profileService";
 
 describe("getPlaces", () => {
-  it("starts with where I am", () => {
-    expect(getPlaces()[0]).toEqual(getCurrentPlace());
+  it("starts with Lisbon by default", () => {
+    expect(getPlaces()[0].id).toBe("lisbon");
+  });
+
+  it("starts with where I am and keeps every other place", () => {
+    expect(getPlaces("amsterdam").map(({ id }) => id)).toEqual([
+      "amsterdam",
+      "lisbon",
+      "pontaDelgada",
+    ]);
   });
 
   it("lists each place once", () => {
@@ -47,8 +49,8 @@ describe("getPlaces", () => {
 describe("getFallbackProfile", () => {
   it("keeps the footer's place and links", () => {
     const profile = getFallbackProfile();
-    expect(profile.currentPlace).toBe(getCurrentPlace().id);
-    expect(profile.contacts).toEqual(getContactLinks());
+    expect(profile.currentPlace).toBe("lisbon");
+    expect(profile.contacts.map(({ id }) => id)).toEqual(["github", "linkedin"]);
   });
 });
 
@@ -143,13 +145,13 @@ describe("toProfile", () => {
 
   it("uses the default place for an unknown one", () => {
     expect(toProfile({ ...row, current_place: "porto" }).currentPlace).toBe(
-      getCurrentPlace().id,
+      "lisbon",
     );
   });
 
   it("doesn't take an inherited property for a place", () => {
     expect(
       toProfile({ ...row, current_place: "constructor" }).currentPlace,
-    ).toBe(getCurrentPlace().id);
+    ).toBe("lisbon");
   });
 });
