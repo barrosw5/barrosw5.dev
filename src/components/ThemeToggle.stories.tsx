@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect } from "storybook/test";
+import { expect, waitFor } from "storybook/test";
 
 import { messages } from "@/i18n/messages";
 import type { Locale } from "@/i18n/routing";
@@ -62,14 +62,31 @@ export const ClickingSwitchesAndSavesTheChoice: Story = {
     const t = messages[globals.locale as Locale].theme;
     const button = canvas.getByRole("button", { name: t.label });
 
+    // Interrupting a view transition inside this test's frame drops the test
+    // browser's connection, so each click waits for the animation to end.
+    // Quick double clicks are tested on the real site (e2e/theme.spec.ts).
+    const animationEnded = () =>
+      waitFor(
+        () =>
+          expect(
+            document.documentElement.dataset.themeTransition,
+          ).toBeUndefined(),
+        { timeout: 3000 },
+      );
+
+    // The theme changes one frame after the click, inside the view transition
     await userEvent.click(button);
-    await expect(button).toHaveAttribute("aria-pressed", "true");
+    await waitFor(() => expect(button).toHaveAttribute("aria-pressed", "true"));
     await expect(document.documentElement).toHaveClass("dark");
     await expect(localStorage.getItem("theme")).toBe("dark");
+    await animationEnded();
 
     await userEvent.click(button);
-    await expect(button).toHaveAttribute("aria-pressed", "false");
+    await waitFor(() =>
+      expect(button).toHaveAttribute("aria-pressed", "false"),
+    );
     await expect(document.documentElement).not.toHaveClass("dark");
     await expect(localStorage.getItem("theme")).toBe("light");
+    await animationEnded();
   },
 };

@@ -1,3 +1,7 @@
+import type { Page } from "@playwright/test";
+
+import { activeThemeTransition } from "../src/theme/theme";
+
 import { expect, test, text, waitForHydration } from "./fixtures";
 
 const en = text("en");
@@ -48,6 +52,57 @@ test.describe("the theme button", () => {
     await waitForHydration(page);
     await expect(page.locator("html")).toHaveClass(/\bdark\b/);
     await expect(button).toHaveAttribute("aria-pressed", "true");
+  });
+
+  test("a quick double click ends back on the first theme", async ({
+    page,
+    open,
+  }) => {
+    await open("/en");
+    const button = page.getByRole("button", { name: en.theme.label });
+
+    await button.click();
+    await button.click();
+
+    await expect(page.locator("html")).not.toHaveClass(/\bdark\b/);
+    await expect(button).toHaveAttribute("aria-pressed", "false");
+    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBe(
+      "light",
+    );
+    // The animation cleans up after itself
+    await expect(page.locator("html")).not.toHaveAttribute(
+      "data-theme-transition",
+    );
+  });
+});
+
+test.describe("the theme transition", () => {
+  // The name of the CSS animation that reveals the new theme
+  const revealAnimation = async (page: Page) => {
+    const handle = await page.waitForFunction(() =>
+      document
+        .getAnimations()
+        .map((animation) => (animation as CSSAnimation).animationName)
+        .find((name) => name?.startsWith("theme-") && name !== "theme-crt-off"),
+    );
+    return handle.jsonValue();
+  };
+
+  test("plays the site's animation", async ({ page, open }) => {
+    await open("/en");
+    await page.getByRole("button", { name: en.theme.label }).click();
+    expect(await revealAnimation(page)).toBe(
+      activeThemeTransition === "split" ? "theme-split-open" : "theme-crt-on",
+    );
+  });
+
+  test.describe("with reduced motion", () => {
+    test("only fades, nothing moves", async ({ page, open }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await open("/en");
+      await page.getByRole("button", { name: en.theme.label }).click();
+      expect(await revealAnimation(page)).toBe("theme-fade");
+    });
   });
 });
 

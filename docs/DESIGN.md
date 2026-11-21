@@ -50,6 +50,12 @@ monochrome site that rewards people who explore it.
   short animation: ThemeToggle turns the moon into the sun (rotate + fade),
   LanguageSwitcher slides in the other language's code (EN ↔ PT). Both start
   from the visitor's system: OS light/dark, browser language.
+- **Switching theme is a transition, never a flashbang.** A line opens from the
+  middle of the screen and reveals the new theme while its brightness rises
+  (`split`). A second one is ready: the page collapses like an old CRT TV and
+  turns back on, opening dimmed (`crt`). `activeThemeTransition` in
+  `src/theme/theme.ts` picks which one the site uses; compare them in Storybook
+  under *Foundations/Theme transitions*. With reduced motion they only fade.
 - **Segmented controls have a sliding pill** behind the selected option: the
   navigation pill (it slides to the page you go to) and the projects view
   toggle.

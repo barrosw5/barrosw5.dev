@@ -3,8 +3,9 @@ import { useLayoutEffect, useSyncExternalStore } from "react";
 import {
   resolvesToDark,
   restoreTheme,
-  setThemePreference,
+  setThemeWithTransition,
   subscribeToTheme,
+  type ThemeTransition,
 } from "@/theme/theme";
 
 export interface ThemeToggleState {
@@ -20,8 +21,10 @@ export interface ThemeToggleState {
 /**
  * Reads and switches light/dark mode, and re-renders when it changes (also
  * from another tab or the OS). Until the visitor clicks, it follows the OS.
+ *
+ * @param transition The animation to play; by default, the site's.
  */
-export function useThemeToggle(): ThemeToggleState {
+export function useThemeToggle(transition?: ThemeTransition): ThemeToggleState {
   // Switching language re-renders the root layout, and React then resets
   // <html> to the attributes in its JSX, wiping the `dark` class the head
   // script added. Put it back before the browser paints, without animating.
@@ -35,6 +38,7 @@ export function useThemeToggle(): ThemeToggleState {
 
   return {
     isDark,
-    toggle: () => setThemePreference(resolvesToDark() ? "light" : "dark"),
+    toggle: () =>
+      setThemeWithTransition(resolvesToDark() ? "light" : "dark", transition),
   };
 }

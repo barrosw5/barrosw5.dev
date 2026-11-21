@@ -5,21 +5,24 @@ import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { useThemeToggle } from "@/hooks/useThemeToggle";
+import type { ThemeTransition } from "@/theme/theme";
 
 // Both icons are always there, stacked; the `dark` class on <html> decides
 // which one shows. CSS knows the theme before React loads (the script in
 // <head> sets the class), so the right icon appears with no flash.
+// During a theme transition the turn waits for the new page to reach the
+// button, otherwise it would finish before anyone could see it.
 const icon =
-  "size-4.5 transition-all duration-300 ease-out motion-reduce:transition-none";
+  "size-4.5 transition-all duration-300 ease-out in-data-[theme-transition=crt]:delay-600 in-data-[theme-transition=split]:delay-300 motion-reduce:transition-none";
 
 /**
  * One button that switches between light and dark mode. It shows the moon
  * in light mode and the sun in dark mode, turning one into the other.
  * Screen readers hear "Dark mode, toggle button, pressed / not pressed".
  */
-export function ThemeToggle() {
+export function ThemeToggle({ transition }: { transition?: ThemeTransition }) {
   const t = useTranslations("theme");
-  const { isDark, toggle } = useThemeToggle();
+  const { isDark, toggle } = useThemeToggle(transition);
 
   return (
     <Button
