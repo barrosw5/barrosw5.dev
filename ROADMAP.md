@@ -7,13 +7,13 @@ A personal site that works as a portfolio/CV and is useful day to day. All conte
 ## Features
 
 ### Public
-- **About** — introduction, experience, skills, what I'm doing right now, contacts and the CV (view and download the PDF)
+- **About** — about me, what I'm doing right now, experience, stack, education and certificates, contacts and the CV (view and download the PDF)
 - **Projects** — GitHub repos (via the API), with selection, order and descriptions chosen in the admin
 - **Wishlist** — items with link, current price, priority and price history; visitors can reserve an item ("I'll give this one")
 
 ### Admin (`/admin`, restricted access)
 - GitHub login, restricted to my ID
-- Edit "about me" and /now (markdown)
+- Edit the About content with form fields: about me, /now, experience, stack, education, certificates and contacts (also shown in the footer)
 - Manage projects: show/hide, order, custom description
 - Upload a new CV
 - Manage the wishlist: add/remove items, see reservations, turn on price tracking
@@ -43,7 +43,7 @@ Rust worker (GitHub Actions cron, e.g. every 6 h)
 
 ## Data model (draft)
 
-- `profile` — about me, "now" content, links, CV URL, current place (Lisbon/Azores)
+- `profile` — about me, "now" content, experience, stack, education, certificates, contacts, current place, CV URL (added in phase 4)
 - `projects` — repo, visible, order, custom description
 - `wishlist_items` — name, URL, image, priority, current price, tracking on
 - `price_history` — item, price, date
@@ -82,12 +82,12 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Tests: unit + e2e (access denied without login, allowed with it)
 
 ### Phase 2 — About (experience, now, contacts)
-- [ ] DB: `profile` table
+- [x] DB: `profile` table
 - [ ] API + service: `profileApi` / `profileService` (+ docs)
 - [ ] Hook: `useProfile`
-- [ ] Components: the About bento — experience, stack, what I'm doing now, contacts, local time (+ stories)
+- [ ] Components: the About bento — about me with what I'm doing now and the local time, experience, stack, education and certificates, contacts (+ stories)
 - [ ] Pages: the home intro and `/about` (replaces the "under construction" page)
-- [ ] Admin: edit about and "now" (markdown), the current place (Lisbon/Azores) and the contacts
+- [ ] Admin: edit every About card with form fields, the current place and the contacts (also shown in the footer)
 - [ ] Decide the public contact email (personal, an alias or a separate address)
 - [ ] Tests
 

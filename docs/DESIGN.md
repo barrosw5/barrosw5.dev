@@ -78,8 +78,9 @@ monochrome site that rewards people who explore it.
 - **Pages:** Home, Projects, About, Wishlist. Pages not built yet show an
   "under construction" message; unknown addresses show a 404 with the same
   look (mono label, two-tone headline, back home).
-- **About:** a **bento** of 4–6 large, airy cards (experience, stack, what I'm
-  doing now, contacts, the CV). Never crowded.
+- **About:** a **bento** of 4–6 large, airy cards (about me with what I'm doing
+  now, experience, stack, education and certificates, contacts, the CV). Never
+  crowded.
 - **One screen at a time on desktop:** pages fit the screen and don't scroll
   like a long document. On Home/Projects, scrolling moves from one project to
   the next. On the phone pages do scroll (e.g. the About bento stacks into one

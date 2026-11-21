@@ -132,6 +132,50 @@ with every Vercel customer. A sign-in started on a preview isn't completed
 there: Supabase sends the browser to the Site URL (production), without a
 session on the preview. To test the admin, use localhost or production.
 
+### Tables
+
+Migrations live in `supabase/migrations/` and are run by hand, once, in
+Supabase → **SQL Editor**, before merging the code that needs them.
+
+#### `profile`
+
+The content of the About page and the footer. It has **a single row** and
+everything in it is public.
+
+| Who | Read | Update | Insert / delete |
+|---|---|---|---|
+| Visitor (`anon`) | Yes | No (`42501`) | No (`42501`) |
+| Signed in, not the admin | Yes | No: 0 rows changed | No (`42501`) |
+| Admin (`app_metadata.role = "admin"`) | Yes | Yes | No (`42501`) |
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `boolean` | Always `true`, which is what limits the table to one row |
+| `about_en`, `about_pt` | `text` | About me |
+| `doing_now_en`, `doing_now_pt` | `text` | What I'm doing now |
+| `current_place` | `text` | `lisbon`, `pontaDelgada` or `amsterdam` |
+| `experience` | `jsonb` list | `{ id, title: { en, pt }, company, startDate, endDate, description: { en, pt } }` |
+| `stack` | `jsonb` list | `{ id, name }` |
+| `education` | `jsonb` list | `{ id, title: { en, pt }, school, startDate, endDate, description: { en, pt } }` |
+| `certificates` | `jsonb` list | `{ id, name: { en, pt }, issuer, issuedOn, url }`; `url` may be `null` |
+| `contacts` | `jsonb` list | `{ id, href }`; also shown in the footer |
+
+Dates are `YYYY-MM`. An `endDate` of `null` means "present". Lists are stored in
+display order.
+
+Example of one `experience` entry:
+
+```json
+{
+  "id": "6f1c2f5e-3f7b-4a55-9d1e-2b7c8a4e1f90",
+  "title": { "en": "Software developer", "pt": "Programador" },
+  "company": "Example",
+  "startDate": "2024-09",
+  "endDate": null,
+  "description": { "en": "What I did there.", "pt": "O que fiz lá." }
+}
+```
+
 ### Errors
 
 | When | What happens |

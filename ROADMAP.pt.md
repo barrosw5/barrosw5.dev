@@ -7,13 +7,13 @@ Site pessoal que serve de portfólio/CV e é útil no dia a dia. Todo o conteúd
 ## Funcionalidades
 
 ### Público
-- **Sobre** — apresentação, experiência, competências, o que estou a fazer agora, contactos e o CV (ver e transferir o PDF)
+- **Sobre** — sobre mim, o que estou a fazer agora, experiência, stack, formação e certificados, contactos e o CV (ver e transferir o PDF)
 - **Projetos** — repos do GitHub (via API), com seleção, ordem e descrições escolhidas no admin
 - **Wishlist** — itens com link, preço atual, prioridade e histórico de preço; os visitantes podem reservar um item ("vou oferecer isto")
 
 ### Admin (`/admin`, acesso restrito)
 - Login com GitHub, restrito ao meu ID
-- Editar "sobre mim" e /now (markdown)
+- Editar o conteúdo do Sobre com campos de formulário: sobre mim, /now, experiência, stack, formação, certificados e contactos (também mostrados no rodapé)
 - Gerir projetos: mostrar/esconder, ordem, descrição personalizada
 - Upload de um CV novo
 - Gerir a wishlist: adicionar/remover itens, ver reservas, ativar o tracking de preço
@@ -43,7 +43,7 @@ Worker em Rust (GitHub Actions cron, ex.: de 6 em 6 h)
 
 ## Modelo de dados (rascunho)
 
-- `profile` — sobre mim, conteúdo do "agora", links, URL do CV, onde estou (Lisboa/Açores)
+- `profile` — sobre mim, conteúdo do "agora", experiência, stack, formação, certificados, contactos, onde estou, URL do CV (acrescentado na fase 4)
 - `projects` — repo, visível, ordem, descrição personalizada
 - `wishlist_items` — nome, URL, imagem, prioridade, preço atual, tracking ativo
 - `price_history` — item, preço, data
@@ -82,12 +82,12 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] Testes: unitários + e2e (acesso negado sem login, permitido com login)
 
 ### Fase 2 — Sobre (experiência, agora, contactos)
-- [ ] BD: tabela `profile`
+- [x] BD: tabela `profile`
 - [ ] API + service: `profileApi` / `profileService` (+ docs)
 - [ ] Hook: `useProfile`
-- [ ] Componentes: o bento do Sobre — experiência, stack, o que estou a fazer agora, contactos, hora local (+ stories)
+- [ ] Componentes: o bento do Sobre — sobre mim com o que estou a fazer agora e a hora local, experiência, stack, formação e certificados, contactos (+ stories)
 - [ ] Páginas: a apresentação no início e `/about` (substitui a página "em construção")
-- [ ] Admin: editar o sobre e o "agora" (markdown), onde estou (Lisboa/Açores) e os contactos
+- [ ] Admin: editar todos os cartões do Sobre com campos de formulário, onde estou e os contactos (também mostrados no rodapé)
 - [ ] Decidir o email de contacto público (pessoal, um alias ou um endereço à parte)
 - [ ] Testes
 
