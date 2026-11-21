@@ -76,10 +76,10 @@ Uma funcionalidade só está feita quando funciona nos dois idiomas, em modo cla
 - [x] Deploy na Vercel (com deploy de preview em cada PR)
 
 ### Fase 1 — Autenticação e admin
-- [ ] Login com GitHub (Supabase Auth), restrito ao meu ID
-- [ ] `proxy.ts` a proteger `/admin` (nome no Next 16 do antigo `middleware.ts`)
-- [ ] Layout e navegação do admin (+ stories)
-- [ ] Testes: unitários + e2e (acesso negado sem login, permitido com login)
+- [x] Login com GitHub (Supabase Auth), restrito ao meu ID
+- [x] `proxy.ts` a proteger `/admin` (nome no Next 16 do antigo `middleware.ts`)
+- [x] Layout e navegação do admin (+ stories)
+- [x] Testes: unitários + e2e (acesso negado sem login, permitido com login)
 
 ### Fase 2 — Sobre (experiência, agora, contactos)
 - [ ] BD: tabela `profile`

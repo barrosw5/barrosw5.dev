@@ -32,6 +32,11 @@ export default defineConfig({
           // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
           storybookTest({ configDir: path.join(dirname, '.storybook') }),
         ],
+        // Prepared up front: found halfway through a run with an empty cache
+        // (always, on CI), Vite reloads the page and the running stories fail
+        optimizeDeps: {
+          include: ['@supabase/ssr', 'next-intl/server', 'next/headers'],
+        },
         test: {
           name: 'storybook',
           browser: {

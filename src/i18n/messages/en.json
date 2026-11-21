@@ -34,8 +34,10 @@
   "footer": {
     "places": {
       "lisbon": "Lisbon",
-      "azores": "Azores"
+      "pontaDelgada": "Ponta Delgada",
+      "amsterdam": "Amsterdam"
     },
+    "clock": "Local time",
     "contacts": {
       "label": "Contacts",
       "github": "GitHub",
@@ -72,5 +74,35 @@
     "dark": "Switch to dark mode",
     "light": "Switch to light mode",
     "language": "Switch to {language}"
+  },
+  "admin": {
+    "loading": "Checking access…",
+    "login": {
+      "metaTitle": "Sign in",
+      "label": "Restricted area",
+      "title": "Sign in.",
+      "description": "Reserved for barrosw5.",
+      "button": "Continue with GitHub",
+      "pending": "Opening GitHub…",
+      "back": "Back to the site",
+      "errors": {
+        "denied": "This account doesn't have access.",
+        "failed": "Couldn't sign in. Try again."
+      }
+    },
+    "nav": {
+      "label": "Admin",
+      "overview": "Overview",
+      "viewSite": "View site",
+      "signOut": "Sign out",
+      "signingOut": "Signing out…",
+      "signOutFailed": "Couldn't sign out. Try again."
+    },
+    "overview": {
+      "metaTitle": "Admin",
+      "label": "Admin",
+      "title": "You're in.",
+      "description": "The tools to manage the site arrive here, one section at a time."
+    }
   }
 }

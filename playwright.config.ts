@@ -12,6 +12,9 @@ import { defineConfig, devices } from "@playwright/test";
  *   E2E_BASE_URL=https://barrosw5-dev.vercel.app pnpm test:e2e
  */
 const PORT = 3123;
+// A fake Supabase for the login tests (see e2e/fake-supabase.mjs)
+const SUPABASE_PORT = 3124;
+export const fakeSupabaseURL = `http://127.0.0.1:${SUPABASE_PORT}`;
 const deployedURL = process.env.E2E_BASE_URL;
 const baseURL = deployedURL ?? `http://localhost:${PORT}`;
 const isCI = !!process.env.CI;
@@ -51,10 +54,22 @@ export default defineConfig({
   // already running `pnpm start -p 3123` is reused.
   webServer: deployedURL
     ? undefined
-    : {
-        command: `pnpm build && pnpm start -p ${PORT}`,
-        url: `${baseURL}/en`,
-        reuseExistingServer: !isCI,
-        timeout: 240_000,
-      },
+    : [
+        {
+          command: `node e2e/fake-supabase.mjs ${SUPABASE_PORT} ${baseURL}`,
+          url: `${fakeSupabaseURL}/health`,
+          reuseExistingServer: !isCI,
+        },
+        {
+          command: `pnpm build && pnpm start -p ${PORT}`,
+          url: `${baseURL}/en`,
+          reuseExistingServer: !isCI,
+          timeout: 240_000,
+          // These win over .env.local: tests never touch the real project
+          env: {
+            NEXT_PUBLIC_SUPABASE_URL: fakeSupabaseURL,
+            NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_e2e",
+          },
+        },
+      ],
 });

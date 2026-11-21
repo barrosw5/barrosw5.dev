@@ -86,8 +86,13 @@ monochrome site that rewards people who explore it.
   column), and scrolling also moves between projects.
 - **Navigation:** a floating pill, always fixed (it never scrolls away); **⌘K**
   command palette on desktop.
-- **Footer:** where I am (Lisbon or the Azores) with its local time and a red
-  "live" dot, profile links, copyright. Small Geist Mono text.
+- **Footer:** where I am with its local time and a red "live" dot, profile
+  links, copyright. Small Geist Mono text. The place and time sit on an endless
+  **wheel**, like a drum on its side: the other cities (Lisbon, Ponta Delgada,
+  Amsterdam: one for each place I've worked) show above and below, and it rolls
+  up or down. Hover and scroll with a mouse;
+  tap, or hold and drag, with a finger (a quick swipe still scrolls the page),
+  and it closes by itself a moment after the finger lets go.
 
 ## Mobile and desktop
 

@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locale as rootLocale } from "next/root-params";
 
 import { SiteAnalytics } from "@/analytics/SiteAnalytics";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { languageTags, routing } from "@/i18n/routing";
 import { geistMono, geistSans } from "@/lib/fonts";
 import { ThemeScript } from "@/theme/ThemeScript";
@@ -33,6 +31,12 @@ export default async function LocaleLayout({
   const locale = await rootLocale();
   if (!hasLocale(routing.locales, locale)) notFound();
 
+  // Translations travel to the browser inside every page, so the private
+  // area's stay out of here: its own layout adds them
+  const publicMessages = Object.fromEntries(
+    Object.entries(await getMessages()).filter(([name]) => name !== "admin"),
+  );
+
   return (
     <html
       lang={languageTags[locale]}
@@ -45,12 +49,8 @@ export default async function LocaleLayout({
         <ThemeScript />
       </head>
       <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider>
-          <SiteHeader />
-          <main id="content" className="flex flex-1 flex-col">
-            {children}
-          </main>
-          <SiteFooter />
+        <NextIntlClientProvider messages={publicMessages}>
+          {children}
         </NextIntlClientProvider>
         {/* Vercel sets VERCEL=1 when it builds the site: locally and on CI
             there are no analytics (their scripts only exist on Vercel) */}

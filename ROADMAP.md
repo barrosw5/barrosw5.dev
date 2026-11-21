@@ -76,10 +76,10 @@ A feature is only done when it works in both languages, in light and dark mode, 
 - [x] Deploy to Vercel (with a preview deploy on each PR)
 
 ### Phase 1 — Auth and admin
-- [ ] GitHub login (Supabase Auth), restricted to my ID
-- [ ] `proxy.ts` protecting `/admin` (Next 16 name for the old `middleware.ts`)
-- [ ] Admin layout and navigation (+ stories)
-- [ ] Tests: unit + e2e (access denied without login, allowed with it)
+- [x] GitHub login (Supabase Auth), restricted to my ID
+- [x] `proxy.ts` protecting `/admin` (Next 16 name for the old `middleware.ts`)
+- [x] Admin layout and navigation (+ stories)
+- [x] Tests: unit + e2e (access denied without login, allowed with it)
 
 ### Phase 2 — About (experience, now, contacts)
 - [ ] DB: `profile` table
