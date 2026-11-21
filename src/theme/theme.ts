@@ -94,6 +94,29 @@ export function setThemePreference(preference: ThemePreference) {
 let runningTransition: ViewTransition | null = null;
 
 /**
+ * Chromium crashes the tab if a view transition runs inside an iframe (like
+ * Storybook's) while an element is animating its `transform`. So in an iframe,
+ * running animations are cancelled and no CSS transition can start (the
+ * sun/moon icon would) until the view transition ends.
+ *
+ * @returns A function that lets transitions run again.
+ */
+function freezeAnimationsInIframe() {
+  if (window.self === window.top) return () => {};
+
+  for (const animation of document.getAnimations()) animation.cancel();
+
+  const noTransitions = document.createElement("style");
+  noTransitions.textContent =
+    "*,*::before,*::after{transition:none!important}";
+  document.head.appendChild(noTransitions);
+  // Make the browser apply it now, before the theme changes
+  void getComputedStyle(document.documentElement).color;
+
+  return () => noTransitions.remove();
+}
+
+/**
  * Like `setThemePreference`, but animated with the View Transitions API: the
  * browser photographs the page, the theme changes, and the CSS in globals.css
  * animates from the photo to the live page. Browsers without the API just
@@ -113,6 +136,7 @@ export function setThemeWithTransition(
     return;
   }
 
+  const unfreeze = freezeAnimationsInIframe();
   const root = document.documentElement;
   root.dataset.themeTransition = transition;
 
@@ -128,6 +152,7 @@ export function setThemeWithTransition(
     .finally(() => {
       runningTransition = null;
       delete root.dataset.themeTransition;
+      unfreeze();
     });
 }
 

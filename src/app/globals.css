@@ -329,6 +329,60 @@ html[data-theme-transition="crt"]::view-transition-new(root) {
   }
 }
 
+/*
+ * Headlines that animate in (RevealHeadline). CSS only, so they start with
+ * the first paint and don't depend on JavaScript. Each piece waits
+ * --i × --reveal-gap, which creates the cascade.
+ */
+:root {
+  --reveal-rise-duration: 900ms;
+  --reveal-soft-duration: 700ms;
+  /* Room in each word's window for accents and letters like g, p, ç */
+  --reveal-mask-room: 0.16em;
+}
+
+/* Rise: the window. `clip` keeps the text's baseline, unlike `hidden` */
+[data-text-reveal="rise"] [data-reveal-mask] {
+  overflow-x: visible;
+  overflow-y: clip;
+  padding-block: var(--reveal-mask-room);
+  margin-block: calc(var(--reveal-mask-room) * -1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-text-reveal="rise"]:not([data-reveal-done]) [data-reveal-item] {
+    animation: reveal-rise var(--reveal-rise-duration)
+      cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * var(--reveal-gap));
+  }
+  [data-text-reveal="soft"]:not([data-reveal-done]) [data-reveal-item] {
+    animation: reveal-soft var(--reveal-soft-duration) ease-out both;
+    animation-delay: calc(var(--i) * var(--reveal-gap));
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    transform: translateY(125%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-soft {
+  from {
+    opacity: 0;
+    transform: translateY(0.25em);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

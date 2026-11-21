@@ -61,6 +61,12 @@ monochrome site that rewards people who explore it.
 - **Segmented controls have a sliding pill** behind the selected option: the
   navigation pill (it slides to the page you go to) and the projects view
   toggle.
+- **The home headline rises into place.** Each word comes up from below inside
+  an invisible window (`rise`). A second version is ready, with letters coming
+  out of a blur (`soft`). `activeHeadlineReveal` in
+  `src/components/RevealHeadline.tsx` picks one. CSS only, so it starts on the
+  first paint; it plays once per text, and screen readers get the whole
+  sentence.
 - Images and headlines **reveal on scroll**.
 - **`prefers-reduced-motion` is always respected**: with it on, things appear
   without moving.

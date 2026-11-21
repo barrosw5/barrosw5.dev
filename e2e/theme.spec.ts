@@ -93,6 +93,38 @@ test.describe("the theme button", () => {
     await expect(html).not.toHaveClass(/\bdark\b/);
     await expect(button).toHaveAttribute("aria-pressed", "false");
   });
+
+  // Regression test: Chromium crashes the tab if a view transition starts in
+  // an iframe (Storybook shows stories in one) during a transform animation
+  test("works inside an iframe during another animation", async ({
+    page,
+    baseURL,
+  }) => {
+    let crashed = false;
+    page.on("crash", () => {
+      crashed = true;
+    });
+    await page.setContent(
+      `<iframe id="site" style="width:100%;height:600px" src="${baseURL}/en"></iframe>`,
+    );
+    const frame = page.frameLocator("#site");
+    await expect(
+      frame.locator("footer time").filter({ visible: true }),
+    ).toBeVisible();
+
+    // A long animation, so it's surely still running at the click
+    await frame.locator("h1").evaluate((heading) => {
+      heading.animate(
+        { transform: ["translateY(1px)", "translateY(0)"] },
+        { duration: 10_000 },
+      );
+    });
+    const button = frame.getByRole("button", { name: en.theme.label });
+    await button.click();
+
+    await expect(button).toHaveAttribute("aria-pressed", "true");
+    expect(crashed).toBe(false);
+  });
 });
 
 test.describe("the theme transition", () => {
