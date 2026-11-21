@@ -1,3 +1,7 @@
+import type { Page } from "@playwright/test";
+
+import { activeThemeTransition } from "../src/theme/theme";
+
 import { expect, test, text, waitForHydration } from "./fixtures";
 
 const en = text("en");
@@ -48,6 +52,76 @@ test.describe("the theme button", () => {
     await waitForHydration(page);
     await expect(page.locator("html")).toHaveClass(/\bdark\b/);
     await expect(button).toHaveAttribute("aria-pressed", "true");
+  });
+
+  // Regression test: spamming the button used to flash between light and dark
+  test("ignores clicks until the animation ends", async ({ page, open }) => {
+    await open("/en");
+    const html = page.locator("html");
+    const button = page.getByRole("button", { name: en.theme.label });
+
+    await button.click();
+    // Hold the animation still, so the clicks below are surely in the middle
+    await page.waitForFunction(() =>
+      document
+        .getAnimations()
+        .some((a) => (a as CSSAnimation).animationName?.startsWith("theme-")),
+    );
+    await page.evaluate(() => {
+      for (const animation of document.getAnimations()) animation.pause();
+    });
+
+    // One at a time, with a pause: the theme changes a frame after a click, so
+    // clicks in a row could cancel each other out and hide a real problem
+    for (let i = 0; i < 3; i++) {
+      await button.evaluate((el) => (el as HTMLElement).click());
+      await page.waitForTimeout(150);
+      expect(
+        await page.evaluate(() => ({
+          dark: document.documentElement.classList.contains("dark"),
+          saved: localStorage.getItem("theme"),
+        })),
+      ).toEqual({ dark: true, saved: "dark" });
+    }
+
+    // Once it ends, the animation cleans up and the button works again
+    await page.evaluate(() => {
+      for (const animation of document.getAnimations()) animation.finish();
+    });
+    await expect(html).not.toHaveAttribute("data-theme-transition");
+    await button.click();
+    await expect(html).not.toHaveClass(/\bdark\b/);
+    await expect(button).toHaveAttribute("aria-pressed", "false");
+  });
+});
+
+test.describe("the theme transition", () => {
+  // The name of the CSS animation that reveals the new theme
+  const revealAnimation = async (page: Page) => {
+    const handle = await page.waitForFunction(() =>
+      document
+        .getAnimations()
+        .map((animation) => (animation as CSSAnimation).animationName)
+        .find((name) => name?.startsWith("theme-") && name !== "theme-crt-off"),
+    );
+    return handle.jsonValue();
+  };
+
+  test("plays the site's animation", async ({ page, open }) => {
+    await open("/en");
+    await page.getByRole("button", { name: en.theme.label }).click();
+    expect(await revealAnimation(page)).toBe(
+      activeThemeTransition === "split" ? "theme-split-open" : "theme-crt-on",
+    );
+  });
+
+  test.describe("with reduced motion", () => {
+    test("only fades, nothing moves", async ({ page, open }) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await open("/en");
+      await page.getByRole("button", { name: en.theme.label }).click();
+      expect(await revealAnimation(page)).toBe("theme-fade");
+    });
   });
 });
 

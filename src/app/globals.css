@@ -220,6 +220,115 @@
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
+/*
+ * Theme transitions. While the theme changes, the browser shows two layers
+ * over the page (View Transitions API): ::view-transition-old is a photo of
+ * the old page and ::view-transition-new is the new page, live. Which
+ * animation plays comes from `data-theme-transition` on <html>, set by
+ * setThemeWithTransition in src/theme/theme.ts.
+ */
+:root {
+  --theme-split-duration: 650ms;
+  --theme-crt-duration: 900ms;
+  /* The dimmed start of the new theme: the eyes adapt, no flashbang */
+  --theme-dim: 0.7;
+  /* The "TV off" colour behind the CRT, the same in both themes */
+  --theme-crt-off: oklch(0.1 0 0);
+}
+
+/* Clicks go through to the page while the animation plays */
+::view-transition {
+  pointer-events: none;
+}
+
+/* Split: the old photo stays still, the new page opens from the middle */
+html[data-theme-transition="split"]::view-transition-old(root) {
+  animation: none;
+}
+html[data-theme-transition="split"]::view-transition-new(root) {
+  animation: theme-split-open var(--theme-split-duration)
+    cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes theme-split-open {
+  from {
+    clip-path: inset(50% 0 50% 0);
+    filter: brightness(var(--theme-dim));
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    filter: brightness(1);
+  }
+}
+
+/* CRT: the old page collapses into a line and a dot; the new one comes back */
+html[data-theme-transition="crt"]::view-transition {
+  background: var(--theme-crt-off);
+}
+html[data-theme-transition="crt"]::view-transition-old(root) {
+  animation: theme-crt-off var(--theme-crt-duration) ease-in both;
+}
+html[data-theme-transition="crt"]::view-transition-new(root) {
+  animation: theme-crt-on var(--theme-crt-duration) ease-out both;
+}
+
+@keyframes theme-crt-off {
+  0% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+  }
+  32% {
+    transform: scale(1, 0.006);
+    filter: brightness(6);
+  }
+  46%,
+  100% {
+    transform: scale(0, 0.006);
+    filter: brightness(10);
+  }
+}
+
+@keyframes theme-crt-on {
+  0%,
+  54% {
+    transform: scale(0, 0.006);
+    filter: brightness(10);
+  }
+  /* Only the thin line glows... */
+  68% {
+    transform: scale(1, 0.006);
+    filter: brightness(6);
+  }
+  /* ...the picture opens dimmed, so light mode is no flashbang here either */
+  71% {
+    transform: scale(1, 0.02);
+    filter: brightness(var(--theme-dim));
+  }
+  100% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+  }
+}
+
+/* Reduced motion: nothing moves, the themes just fade into each other */
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme-transition]::view-transition {
+    background: none;
+  }
+  html[data-theme-transition]::view-transition-old(root) {
+    animation: none;
+  }
+  html[data-theme-transition]::view-transition-new(root) {
+    animation: theme-fade 250ms ease-out both;
+  }
+}
+
+@keyframes theme-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
