@@ -90,3 +90,7 @@ Rules:
 - **Deploys (Vercel):** every merge to `main` goes to production (https://barrosw5-dev.vercel.app); every PR gets a preview deploy with its own address. Environment variables live in Vercel → Settings → Environment Variables and are listed (without values) in `.env.example`: a new variable goes in both, in the same PR. `NEXT_PUBLIC_` ones are baked in at build time, so changing one needs a redeploy. Node's version is pinned by `engines.node` in `package.json` (same major as `.node-version`); pnpm's by `packageManager`, which Vercel honours through `ENABLE_EXPERIMENTAL_COREPACK=1`.
 - **Squash** merge: the PR title becomes the commit message on `main`, so it follows **Conventional Commits** (`feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `ci`, `perf`).
 - Before opening a PR, run locally: `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm build-storybook`, `pnpm test:e2e`.
+
+## 7. Before adding code
+
+Use the first option that fully works: what already exists in the repo, then the platform, then an installed dependency, and only then new code. Never add a dependency for a few lines, or an abstraction nobody asked for. These never override the rules above (tests, stories, docs, i18n).
