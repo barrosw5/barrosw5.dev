@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
-import { formatTime } from "@/core/utils/formatTime";
+import { ClockWheel } from "@/components/ClockWheel";
 import { useSiteFooter } from "@/hooks/useSiteFooter";
 
 /**
@@ -12,28 +12,12 @@ import { useSiteFooter } from "@/hooks/useSiteFooter";
  */
 export function SiteFooter() {
   const t = useTranslations("footer");
-  const locale = useLocale();
-  const { place, now, contacts } = useSiteFooter();
+  const { places, now, contacts, onCopyrightTap } = useSiteFooter();
 
   return (
     // pb-28 on the phone leaves room for the navigation pill at the bottom
     <footer className="mx-auto flex w-full max-w-page flex-col gap-4 px-gutter pt-8 pb-28 font-mono text-xs text-muted-foreground md:flex-row md:items-center md:justify-between md:pb-10">
-      <p className="flex items-center gap-2">
-        {/* Red dot = live */}
-        <span aria-hidden className="size-1.5 rounded-full bg-status-live" />
-        <span>{t(`places.${place.id}`)}</span>
-        <span aria-hidden>·</span>
-        {now ? (
-          <time dateTime={now.toISOString()}>
-            {formatTime(now, locale, place.timeZone)}
-          </time>
-        ) : (
-          // Until the browser knows the time: keeps the space, no jump
-          <span aria-hidden className="invisible">
-            00:00
-          </span>
-        )}
-      </p>
+      <ClockWheel places={places} now={now} />
 
       <ul aria-label={t("contacts.label")} className="flex gap-6">
         {contacts.map(({ id, href }) => (
@@ -52,7 +36,11 @@ export function SiteFooter() {
         ))}
       </ul>
 
-      {now && <p>{t("copyright", { year: now.getFullYear() })}</p>}
+      {now && (
+        <p onClick={onCopyrightTap} className="touch-manipulation select-none">
+          {t("copyright", { year: now.getFullYear() })}
+        </p>
+      )}
     </footer>
   );
 }

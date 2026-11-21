@@ -9,12 +9,13 @@ The code that makes these calls lives in `src/core/api/` (see the layers in
 
 - [Supabase](#supabase) — database, login and file storage
 - [Vercel Web Analytics and Speed Insights](#vercel-web-analytics-and-speed-insights) — visits and real-world speed
-- Route Handlers and Server Actions — none yet
+- [Route Handlers](#route-handlers) — the sign-in callback
+- Server Actions — none yet
 
 ## Supabase
 
 [Supabase](https://supabase.com) hosts the site's data: a Postgres database,
-the login (GitHub, roadmap phase 1) and file storage (the CV, images). The
+the login (GitHub) and file storage (the CV, images). The
 site talks to it over HTTPS through the `@supabase/supabase-js` client.
 
 ### Connection
@@ -57,15 +58,79 @@ signed-in user's session goes in `Authorization: Bearer <access token>`.
 |---|---|---|
 | `createSupabaseBrowserClient()` | `src/core/api/supabase/browserClient.ts` | Code running in the browser (Client Components) |
 | `createSupabaseServerClient()` | `src/core/api/supabase/serverClient.ts` | Server Components, Server Actions, Route Handlers |
+| `readProxySession()` | `src/core/api/supabase/proxyClient.ts` | `src/proxy.ts` |
 
 The server client reads the login session from the request cookies, so it is
 created once per request. Pages that use it depend on the request: with Cache
 Components, put that part inside `<Suspense>` (or cache data that is the same
 for every visitor with `"use cache"`).
 
-Once there is a login (phase 1), `src/proxy.ts` will also refresh the session
-on each request with `supabase.auth.getClaims()`, since Server Components
-can't write cookies.
+`src/proxy.ts` refreshes the session with `supabase.auth.getClaims()`, since
+Server Components can't write cookies. It only does so on `/{locale}/admin`
+pages: public pages never wait for Supabase and never set a session cookie, so
+a CDN can't store one and serve it to someone else.
+
+### Auth
+
+Sign-in is GitHub OAuth through Supabase Auth, with PKCE (a one-time secret
+kept in the cookies of the browser that started the sign-in, so a `code`
+intercepted on its way back is useless). PKCE doesn't help if an attacker
+starts the sign-in themselves and the allow-list accepts a site they control:
+they hold their own secret and can use the `code`. That's why the production
+project only allows hosts we own.
+
+```
+Browser → GET /auth/v1/authorize → GitHub (login, password, 2FA)
+        → GET /api/auth/callback/{locale}?code=…
+        → POST /auth/v1/token?grant_type=pkce → session in cookies → /{locale}/admin
+```
+
+| Method | Path | Called from | Auth | Request | Success |
+|---|---|---|---|---|---|
+| `GET` | `/auth/v1/authorize?provider=github&redirect_to=…&code_challenge=…` | Browser (`signInWithGitHub`) | `apikey` | Query string | `302` to GitHub |
+| `POST` | `/auth/v1/token?grant_type=pkce` | Server (`exchangeCodeForClaims`) | `apikey` | `{ "auth_code": "…", "code_verifier": "…" }` | `200` with the session |
+| `POST` | `/auth/v1/token?grant_type=refresh_token` | Proxy, when the token expired | `apikey` | `{ "refresh_token": "…" }` | `200` with a new session |
+| `GET` | `/auth/v1/.well-known/jwks.json` | Server (`getClaims`) | None | None | `200` with the public signing keys |
+| `POST` | `/auth/v1/logout` | Browser (`signOut`), server (`endServerSession`) | `Authorization: Bearer <access token>` | None | `204` |
+
+Who is the admin: only an account with `app_metadata.role = "admin"`.
+`app_metadata` can only be changed from the database or with the secret key.
+`user_metadata` is editable by the user and must never decide access. The check
+runs in the proxy and again in `requireAdmin()`.
+
+Setup, once, outside the code:
+
+1. GitHub → Settings → Developer settings → **OAuth Apps**: homepage is the
+   site, callback is `https://<project-ref>.supabase.co/auth/v1/callback`.
+2. Supabase → Authentication → Sign In / Providers → **GitHub**: paste the
+   Client ID and secret.
+3. Supabase → Authentication → URL Configuration: **Site URL** is the production
+   address; **Redirect URLs** allow `/api/auth/callback/*` on localhost and
+   production only. Never a wildcard in the host here: `vercel.app` is shared
+   with every Vercel customer.
+4. Sign in once (you are refused, but the account now exists), then in the SQL
+   Editor give it the role:
+
+   ```sql
+   update auth.users u
+   set raw_app_meta_data = coalesce(u.raw_app_meta_data, '{}') || '{"role":"admin"}'
+   from auth.identities i
+   where i.user_id = u.id
+     and i.provider = 'github'
+     and i.identity_data ->> 'user_name' = '<github-username>'
+   returning u.id, i.provider_id;
+   ```
+
+5. Sign in again, then turn **off** "Allow new users to sign up" in
+   Authentication → Sign In / Providers, so no other account can be created.
+
+#### Vercel previews
+
+The admin login doesn't work on previews, on purpose. Each preview has its own
+address, so allowing them would take a wildcard on `vercel.app`, a domain shared
+with every Vercel customer. A sign-in started on a preview isn't completed
+there: Supabase sends the browser to the Site URL (production), without a
+session on the preview. To test the admin, use localhost or production.
 
 ### Errors
 
@@ -77,6 +142,10 @@ can't write cookies.
 | A table that doesn't exist (or isn't exposed to the Data API) | `404` `{"code": "PGRST205", "message": "Could not find the table 'public.…' in the schema cache"}` |
 | Secret key used from a browser | Supabase answers `401` |
 | A query RLS doesn't allow | No error for reads: the rows are just not returned. Writes fail with Postgres error `42501` |
+| `redirect_to` isn't in the Redirect URLs | Supabase sends the browser to the Site URL instead of the callback |
+| Invalid, expired or reused sign-in code | `400` from `/auth/v1/token`; the callback redirects with `?error=failed` |
+| Sign-ups turned off and an unknown account signs in | Supabase refuses it; the callback redirects with `?error=failed` |
+| A token with a bad signature or expired beyond renewal | `getClaims()` returns an error; the visitor is treated as signed out |
 
 ### Example
 
@@ -94,6 +163,43 @@ apikey: sb_publishable_…
 
 The table endpoints (`/rest/v1/<table>`) are documented with each feature as
 the tables are created (roadmap phases 2 to 7).
+
+## Route Handlers
+
+### `GET /api/auth/callback/{locale}`
+
+Where the GitHub sign-in comes back to. Code:
+`src/app/api/auth/callback/[locale]/route.ts`.
+
+| | |
+|---|---|
+| Auth | None to call it; the PKCE cookie set when the sign-in started is required for it to succeed |
+| Path | `locale`: `en` or `pt` (anything else falls back to `en`) |
+| Query | `code`: the one-time code from Supabase |
+| Body | None |
+| Cache | `Cache-Control: private, no-store` |
+
+The destination is fixed in the code and never read from the URL, so this
+address can't redirect anyone to another site.
+
+| Response | When |
+|---|---|
+| `303` → `/{locale}/admin`, with the session cookies | The admin signed in |
+| `303` → `/{locale}/admin/login?error=denied` | Another account signed in; its session is ended at once |
+| `303` → `/{locale}/admin/login?error=failed` | No code, or a bad one, or Supabase failed |
+
+Example:
+
+```http
+GET /api/auth/callback/pt?code=3f1c…
+```
+
+```http
+HTTP/1.1 303 See Other
+Location: https://barrosw5-dev.vercel.app/pt/admin
+Cache-Control: private, no-store
+Set-Cookie: sb-<project-ref>-auth-token=base64-…; Path=/; SameSite=Lax
+```
 
 ## Vercel Web Analytics and Speed Insights
 

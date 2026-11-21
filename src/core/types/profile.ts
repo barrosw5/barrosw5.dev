@@ -1,5 +1,5 @@
-/** Where I am right now, shown with its local time in the footer. */
-export type PlaceId = "lisbon" | "azores";
+/** A place on the footer's clock, shown with its local time. */
+export type PlaceId = "lisbon" | "pontaDelgada" | "amsterdam";
 
 export interface Place {
   id: PlaceId;

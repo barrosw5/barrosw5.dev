@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowUpRight, Languages, Moon, Search, Sun } from "lucide-react";
+import {
+  ArrowUpRight,
+  Languages,
+  Moon,
+  Search,
+  Sun,
+  Terminal,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { navIcons } from "@/components/SiteNav";
@@ -17,6 +24,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
+import type { SealedCommand } from "@/core/types/command";
 import { useCommandPalette } from "@/hooks/useCommandPalette";
 
 /**
@@ -25,12 +33,19 @@ import { useCommandPalette } from "@/hooks/useCommandPalette";
  * shortcut for your system). Type to filter, ↑↓ to move, Enter to run, Esc
  * to close.
  */
-export function CommandPalette({ defaultOpen = false }: { defaultOpen?: boolean }) {
+export function CommandPalette({
+  defaultOpen = false,
+  commands,
+}: {
+  defaultOpen?: boolean;
+  /** Replaces the commands found by exact text (used by stories). */
+  commands?: SealedCommand[];
+}) {
   const t = useTranslations("commandPalette");
   const tNav = useTranslations("nav");
   const tFooter = useTranslations("footer");
   const tLanguages = useTranslations("languageSwitcher.languages");
-  const palette = useCommandPalette(defaultOpen);
+  const palette = useCommandPalette(defaultOpen, commands);
   const modifier = palette.isMac ? "⌘" : "Ctrl";
 
   return (
@@ -65,10 +80,24 @@ export function CommandPalette({ defaultOpen = false }: { defaultOpen?: boolean 
         className="motion-reduce:data-closed:animate-none motion-reduce:data-open:animate-none"
       >
         <Command>
-          <CommandInput placeholder={t("placeholder")} />
+          <CommandInput
+            placeholder={t("placeholder")}
+            value={palette.search}
+            onValueChange={palette.setSearch}
+          />
           {/* Tall enough to show every command without scrolling */}
           <CommandList className="max-h-96">
             <CommandEmpty>{t("empty")}</CommandEmpty>
+
+            {palette.unlisted && (
+              <CommandItem
+                value={palette.unlisted.text}
+                onSelect={() => palette.goTo(palette.unlisted!.href)}
+              >
+                <Terminal aria-hidden />
+                <span className="font-mono">{palette.unlisted.text}</span>
+              </CommandItem>
+            )}
 
             <CommandGroup heading={t("groups.pages")}>
               {palette.pages.map(({ id, href, isCurrent }) => {

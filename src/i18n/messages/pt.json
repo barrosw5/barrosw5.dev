@@ -34,8 +34,10 @@
   "footer": {
     "places": {
       "lisbon": "Lisboa",
-      "azores": "Açores"
+      "pontaDelgada": "Ponta Delgada",
+      "amsterdam": "Amesterdão"
     },
+    "clock": "Hora local",
     "contacts": {
       "label": "Contactos",
       "github": "GitHub",
@@ -72,5 +74,35 @@
     "dark": "Mudar para o modo escuro",
     "light": "Mudar para o modo claro",
     "language": "Mudar para {language}"
+  },
+  "admin": {
+    "loading": "A verificar o acesso…",
+    "login": {
+      "metaTitle": "Iniciar sessão",
+      "label": "Área restrita",
+      "title": "Inicia sessão.",
+      "description": "Reservado a barrosw5.",
+      "button": "Continuar com o GitHub",
+      "pending": "A abrir o GitHub…",
+      "back": "Voltar ao site",
+      "errors": {
+        "denied": "Esta conta não tem acesso.",
+        "failed": "Não foi possível iniciar sessão. Tenta outra vez."
+      }
+    },
+    "nav": {
+      "label": "Admin",
+      "overview": "Resumo",
+      "viewSite": "Ver o site",
+      "signOut": "Terminar sessão",
+      "signingOut": "A terminar sessão…",
+      "signOutFailed": "Não foi possível terminar a sessão. Tenta outra vez."
+    },
+    "overview": {
+      "metaTitle": "Admin",
+      "label": "Admin",
+      "title": "Estás dentro.",
+      "description": "As ferramentas para gerir o site chegam aqui, uma secção de cada vez."
+    }
   }
 }

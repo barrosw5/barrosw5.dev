@@ -1,5 +1,8 @@
+import { fileURLToPath } from "node:url";
+
 import type { StorybookConfig } from "@storybook/nextjs-vite";
 import tailwindcss from "@tailwindcss/vite";
+import { mergeConfig } from "vite";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(ts|tsx)"],
@@ -11,10 +14,20 @@ const config: StorybookConfig = {
   ],
   framework: "@storybook/nextjs-vite",
   staticDirs: ["../public"],
-  viteFinal: async (config) => {
-    config.plugins = [...(config.plugins ?? []), tailwindcss()];
-    return config;
-  },
+  viteFinal: async (config) =>
+    mergeConfig(config, {
+      plugins: [tailwindcss()],
+      resolve: {
+        alias: [
+          {
+            find: /^next\/server$/,
+            replacement: fileURLToPath(
+              new URL("./mocks/next-server.ts", import.meta.url),
+            ),
+          },
+        ],
+      },
+    }),
 };
 
 export default config;

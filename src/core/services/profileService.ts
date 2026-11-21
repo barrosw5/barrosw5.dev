@@ -3,7 +3,9 @@ import type { ContactLink, Place, PlaceId } from "@/core/types/profile";
 const timeZones: Record<PlaceId, string> = {
   lisbon: "Europe/Lisbon",
   // One hour behind Lisbon
-  azores: "Atlantic/Azores",
+  pontaDelgada: "Atlantic/Azores",
+  // One hour ahead of Lisbon
+  amsterdam: "Europe/Amsterdam",
 };
 
 /**
@@ -17,6 +19,20 @@ const timeZones: Record<PlaceId, string> = {
 export function getCurrentPlace(): Place {
   const id: PlaceId = "lisbon";
   return { id, timeZone: timeZones[id] };
+}
+
+/**
+ * Every place on the footer's clock. To add a city: its id in `PlaceId`, its
+ * time zone above, and its name in `footer.places` in both languages.
+ *
+ * @returns The places, starting with where I am right now.
+ */
+export function getPlaces(): Place[] {
+  const current = getCurrentPlace();
+  const others = (Object.keys(timeZones) as PlaceId[])
+    .filter((id) => id !== current.id)
+    .map((id) => ({ id, timeZone: timeZones[id] }));
+  return [current, ...others];
 }
 
 /**

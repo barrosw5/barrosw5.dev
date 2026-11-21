@@ -114,3 +114,35 @@ export const ShortcutSearchAndGo: Story = {
     await expect(getRouter().push).toHaveBeenCalledWith(`/${locale}/projects`);
   },
 };
+
+// Interaction test: a command that only shows for its exact text (a made-up
+// one here), and goes to its page with Enter
+export const ExactTextCommand: Story = {
+  tags: ["!dev"],
+  args: {
+    defaultOpen: true,
+    commands: [
+      {
+        digest: "184858a00fd7971f810848266ebcecee5e8b69972c5ffaed622f5ee078671aed",
+        target: "57090815131d1a0e09",
+      },
+    ],
+  },
+  play: async ({ globals, userEvent }) => {
+    const locale = globals.locale as Locale;
+    const t = messages[locale].commandPalette;
+    const dialog = await page().findByRole("dialog", { name: t.title });
+    const inDialog = within(dialog);
+
+    await userEvent.keyboard("xyzz");
+    await expect(await inDialog.findByText(t.empty)).toBeVisible();
+    await expect(inDialog.queryByRole("option")).not.toBeInTheDocument();
+
+    await userEvent.keyboard("y");
+    await expect(await inDialog.findByRole("option", { name: "xyzzy" })).toBeVisible();
+
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => expect(dialog).not.toBeInTheDocument());
+    await expect(getRouter().push).toHaveBeenCalledWith(`/${locale}/projects`);
+  },
+};
