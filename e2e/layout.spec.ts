@@ -93,13 +93,25 @@ test.describe("the clock wheel", () => {
       await page.setViewportSize({ width: 1280, height: 300 });
       await open("/en");
       await wheelOf(page).scrollIntoViewIfNeeded();
-      const before = await page.evaluate(() => window.scrollY);
       await wheelOf(page).hover();
+      await expect(wheelOf(page).getByText(pontaDelgada).first()).toBeVisible();
+      // Two frames, so the browser has registered the open wheel's listener
+      await page.evaluate(
+        () =>
+          new Promise((done) =>
+            requestAnimationFrame(() => requestAnimationFrame(done)),
+          ),
+      );
+      const before = await page.evaluate(() => window.scrollY);
+
       await page.mouse.wheel(0, -100);
       await expect(wheelOf(page)).toHaveAttribute(
         "aria-valuetext",
         showsPlace(amsterdam),
       );
+      // Regression (WebKit on Linux): the page started a smooth scroll too.
+      // Waits long enough for one to show before comparing
+      await page.waitForTimeout(400);
       expect(await page.evaluate(() => window.scrollY)).toBe(before);
     });
 

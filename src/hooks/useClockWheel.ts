@@ -88,28 +88,19 @@ export function useClockWheel(
     if (next) setHasOpened(true);
   }, []);
 
-  // Added by hand because React's wheel and touch listeners are "passive":
-  // they can't stop the page from scrolling while the wheel turns
+  // On window, and only while open. Browsers that scroll on a separate thread
+  // (WebKit on Linux) use a map of where the listeners are, and a listener on
+  // the wheel alone can be missing from it: the page then scrolls anyway. One
+  // on window covers every point; removing it on close keeps the site's
+  // normal scrolling from waiting for JavaScript
   useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
+    if (!isOpen) return;
 
     let wheelDistance = 0;
     let lastWheelStep = 0;
-    let gesture: TouchGesture | null = null;
-    let closeTimer: ReturnType<typeof setTimeout> | undefined;
-
-    const closeSoon = () => {
-      clearTimeout(closeTimer);
-      closeTimer = setTimeout(() => setOpen(false), CLOSE_AFTER_TOUCH_MS);
-    };
-
-    const rowHeight = () =>
-      parseFloat(getComputedStyle(document.documentElement).fontSize) *
-      WHEEL_ROW_REM;
 
     const onWheel = (event: WheelEvent) => {
-      if (!isOpenRef.current) return;
+      if (!ref.current?.contains(event.target as Node)) return;
       event.preventDefault();
 
       // Some mice report lines instead of pixels
@@ -123,6 +114,28 @@ export function useClockWheel(
       lastWheelStep = now;
       setIndex((current) => current + direction);
     };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, [isOpen]);
+
+  // Added by hand because React's touch listeners are "passive": they can't
+  // stop the page from scrolling while a finger turns the wheel
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    let gesture: TouchGesture | null = null;
+    let closeTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const closeSoon = () => {
+      clearTimeout(closeTimer);
+      closeTimer = setTimeout(() => setOpen(false), CLOSE_AFTER_TOUCH_MS);
+    };
+
+    const rowHeight = () =>
+      parseFloat(getComputedStyle(document.documentElement).fontSize) *
+      WHEEL_ROW_REM;
 
     const onTouchStart = (event: TouchEvent) => {
       clearTimeout(closeTimer); // A finger is back: stay open
@@ -222,7 +235,6 @@ export function useClockWheel(
       }
     };
 
-    element.addEventListener("wheel", onWheel, { passive: false });
     element.addEventListener("touchstart", onTouchStart, { passive: true });
     element.addEventListener("touchmove", onTouchMove, { passive: false });
     element.addEventListener("touchend", endTouch);
@@ -233,7 +245,6 @@ export function useClockWheel(
     return () => {
       if (gesture) clearTimeout(gesture.holdTimer);
       clearTimeout(closeTimer);
-      element.removeEventListener("wheel", onWheel);
       element.removeEventListener("touchstart", onTouchStart);
       element.removeEventListener("touchmove", onTouchMove);
       element.removeEventListener("touchend", endTouch);
